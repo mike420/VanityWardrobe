@@ -1,0 +1,10 @@
+{
+  "name": "VanityWardrobe",
+  "description": "An in-game wardrobe and fitting room: try on every armor set, cape, weapon and shield in your game on a model of your character, mix outfits, save them, and see the crafting costs.",
+  "version_number": "1.0.0",
+  "website_url": "https://discord.gg/mnr36G6J4x",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2360",
+    "ValheimModding-Jotunn-2.30.2"
+  ]
+}

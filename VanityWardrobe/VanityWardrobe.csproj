@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)..\Environment.props" Condition="'$(SolutionDir)' == '' And Exists('$(MSBuildThisFileDirectory)..\Environment.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9D3A5C71-E2B4-4F68-A1C9-5B7E0D4F2A36}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VanityWardrobe</RootNamespace>
+    <AssemblyName>VanityWardrobe</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>annotations</Nullable>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(VALHEIM_INSTALL)\valheim.exe</StartProgram>
+    <StartArguments>-console</StartArguments>
+    <StartWorkingDirectory>$(VALHEIM_INSTALL)</StartWorkingDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Translations\English\VanityWardrobe.json">
+      <LogicalName>translations/English.json</LogicalName>
+    </EmbeddedResource>
+    <None Include="Assets\Translations\**\VanityWardrobe.json" Exclude="Assets\Translations\English\VanityWardrobe.json" />
+    <None Include="Nexus\README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\IgnoreAccessModifiers.cs" />
+    <Compile Include="VanityWardrobeMod.cs" />
+    <Compile Include="MainConfig.cs" />
+    <Compile Include="Catalog.cs" />
+    <Compile Include="Biomes.cs" />
+    <Compile Include="Colors.cs" />
+    <Compile Include="Recolor.cs" />
+    <Compile Include="Outfit.cs" />
+    <Compile Include="FittingRoom.cs" />
+    <Compile Include="WardrobePanel.cs" />
+    <Compile Include="Patches.cs" />
+    <Compile Include="Translations.cs" />
+    <Compile Include="..\Shared\ModSettings\*.cs">
+      <Link>ModSettings\%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Package\icon.png" />
+    <Content Include="Package\manifest.json" />
+    <Content Include="Package\CHANGELOG.md" />
+    <Content Include="Package\README.md" />
+    <Content Include="UpdateManifest.ps1" Visible="false" />
+    <Content Include="UpdateNexusReadme.ps1" Visible="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" Visible="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="JotunnLib">
+      <Version>2.30.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <Target Name="ReadVersion" AfterTargets="Build">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="BuiltIdentity" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <BuiltVersion>%(BuiltIdentity.Version)</BuiltVersion>
+      <PackageVersion>$(BuiltVersion.Split('.')[0]).$(BuiltVersion.Split('.')[1]).$(BuiltVersion.Split('.')[2])</PackageVersion>
+      <PackageName>$(AssemblyName)_v$(PackageVersion)</PackageName>
+      <ThunderPackage>$(ProjectDir)ThunderStore\$(PackageName)</ThunderPackage>
+      <AssetsDir>$(ProjectDir)Assets</AssetsDir>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="DeployToGame" AfterTargets="ReadVersion">
+    <ItemGroup>
+      <LanguageFiles Include="$(AssetsDir)\Translations\**\VanityWardrobe.json" />
+    </ItemGroup>
+    <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFolder="$(MOD_DEPLOYPATH)\VanityWardrobe" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="@(LanguageFiles)" DestinationFiles="@(LanguageFiles->'$(MOD_CONFIGPATH)\VanityWardrobe\Translations\%(RecursiveDir)%(Filename)%(Extension)')" OverwriteReadOnlyFiles="true" />
+  </Target>
+
+  <Target Name="UpdateManifestVersion" AfterTargets="DeployToGame" Condition=" '$(Configuration)' == 'Release' And '$(OS)' == 'Windows_NT' ">
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)UpdateManifest.ps1&quot; -ManifestFile &quot;$(ProjectDir)Package\manifest.json&quot; -Version &quot;$(PackageVersion)&quot;" />
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)UpdateNexusReadme.ps1&quot; -ReadmeFile &quot;$(ProjectDir)Package\README.md&quot; -NexusFile &quot;$(ProjectDir)Nexus\README.txt&quot;" />
+  </Target>
+
+  <Target Name="MakeThunderstorePackage" AfterTargets="UpdateManifestVersion" Condition=" '$(Configuration)' == 'Release' ">
+    <Error Text="Package\icon.png is missing (Thunderstore needs 256x256)." Condition="!Exists('$(ProjectDir)Package\icon.png')" />
+    <ItemGroup>
+      <LanguageFiles Include="$(AssetsDir)\Translations\**\VanityWardrobe.json" />
+      <PluginFiles Include="$(TargetDir)$(AssemblyName).dll" />
+      <PackageFiles Include="$(ProjectDir)Package\CHANGELOG.md;$(ProjectDir)Package\README.md;$(ProjectDir)Package\manifest.json;$(ProjectDir)Package\icon.png" />
+    </ItemGroup>
+    <MakeDir Directories="$(ThunderPackage)" />
+    <Copy SourceFiles="@(LanguageFiles)" DestinationFiles="@(LanguageFiles->'$(ThunderPackage)\config\VanityWardrobe\Translations\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(ThunderPackage)\plugins" />
+    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(ThunderPackage)" />
+    <ZipDirectory SourceDirectory="$(ThunderPackage)" DestinationFile="$(ProjectDir)ThunderStore\$(PackageName).zip" Overwrite="true" />
+    <RemoveDir Directories="$(ThunderPackage)" />
+  </Target>
+</Project>
