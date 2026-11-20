@@ -19,6 +19,8 @@ tools/                       check.sh, restart.sh, gameinput.ps1 (see Building a
 VanityWardrobe/              the project
   VanityWardrobeMod.cs       plugin: Awake, Update (calls WardrobePanel.Tick), OnDestroy
   MainConfig.cs              Enable Plugin, Open Key (F9), Chest Radius (30), Start With My Gear
+                             and CarryOverOldSections (copied from the other mods): settings found under an old section number move to the current one,
+                             so renumbering a section keeps users' values; add renamed sections to `OldSections`. Checked by moving a section to `[5 - ...]`.
   Catalog.cs                 item list and set grouping, built from ObjectDB when the window opens
   Biomes.cs                  works out each item's biome from the world (see Biomes below); reads locations in the background; biomes.cache
   Colors.cs, Recolor.cs      per-item colour presets: the choices (colors.txt), the ZDO sync, and the texture recolouring (see Recolor below)
