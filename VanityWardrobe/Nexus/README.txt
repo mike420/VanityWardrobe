@@ -49,6 +49,7 @@ Press [b]F7[/b] in game to open the settings panel, or edit [b]BepInEx/config/Ma
 [*][b]Open Key[/b] (default F9): The key that opens and closes the wardrobe.
 [*][b]Chest Radius[/b] (default 30): Chests within this many metres count towards the have / need totals. 0 counts only your inventory.
 [*][b]Start With My Gear[/b] (default On): The model wears what you are wearing each time the wardrobe opens. If Off, it keeps the last outfit you tried.
+[*][b]Debug Log[/b] (default Off): If On, the game's log gets lines starting [b][VanityWardrobe][/b] about colours: the ones your game sends, the ones it receives from other players, and each item recoloured. Turn it on when asking about a problem seeing other players' colours.
 [/list]
 
 [size=5][b]Translations[/b][/size]
