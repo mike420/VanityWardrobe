@@ -270,6 +270,7 @@ internal sealed class AppearancePanel
         Add(bar.gameObject, TitleHeight, 0f);
         Accent(bar.transform);
         TMP_Text title = Widgets.Label(bar.transform, text, 21f, Theme.TextBright, TextAlignmentOptions.Center, bold: true);
+        UiFont.Norse(title);
         Widgets.Fill(title.gameObject, 4f);
     }
 
@@ -286,6 +287,7 @@ internal sealed class AppearancePanel
         Add(header.gameObject, HeaderHeight, before, shown);
         Accent(header.transform);
         TMP_Text label = Widgets.Label(header.transform, T(key), 16f, Theme.TextBright, TextAlignmentOptions.MidlineLeft, bold: true);
+        UiFont.Norse(label);
         Widgets.Place(label.gameObject, Vector2.zero, Vector2.one, new Vector2(16f, 0f), new Vector2(-8f, 0f));
         return (RectTransform)header.transform;
     }

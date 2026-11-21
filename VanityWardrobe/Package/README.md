@@ -44,6 +44,7 @@ Thank you for your support, and happy gaming! ⚔️  ...... (A Paypal account i
 | Open or close | **F9** (can be changed), or **Esc** |
 | Turn the model | Drag on it, or use the **<** and **>** buttons |
 | Zoom | Mouse wheel over the model |
+| Attack or block | Left click or right click the model |
 | Wear something | Click it in the list. A set puts on all its pieces. |
 | Take something off | Click its slot under the model |
 | Crafting quality | The **<** and **>** buttons above the details |

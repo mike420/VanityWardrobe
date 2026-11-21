@@ -46,6 +46,24 @@ finds files itself, so it will not catch a missing csproj entry.
   bow or shield, with an icon. Rebuilt when the item count or language changes. Sets: armor with `m_setName` is grouped by it;
   armor without one is grouped by the prefab-name words left after removing piece words ("Armor", "Chest", "Legs", "Helmet"...),
   needing two or more different slots. Vanilla Bronze, Iron and Leather have no set name, so they rely on the guess.
+- **Title bar and preview (matches the user's mock):** the title bar has the hanger icon (`Assets/hanger.png`, built in as the resource `icons/hanger.png`, loaded by
+  `UiFont.Hanger`), the title in Norse at 38 pt on the left, and the colour swatches on the right (`BuildColors`); there is no close button (F9 or Esc closes).
+  The list lines up with the search box because the ScrollRect's viewport pivot is set to (0, 0.5): with the default centre pivot, making room for the scrollbar
+  shrank the viewport from both sides and pushed the rows 8 px in on the left. The camera is at 4.7 m looking at 0.92 m so the whole body shows. Left click on the
+  model plays its attack and right click its block, as in BetterEquipSlots' preview: `FittingRoom.Attack` triggers the weapon's `m_attack.m_attackAnimation` (with a
+  trailing `0` when it has a chain or random animations; fists when nothing is held) and `Block` sets the animator bool `blocking` for 0.9 s. The animators are
+  set to `AlwaysAnimate` with events off. The ATTACK and BLOCK hints use the game's `mouse1_icon` and `mouse2_icon` sprites and `$settings_attack` and
+  `$settings_block`. Checked in game with a knife.
+  `tools/check.sh` now also references the publicized copy of any module that has one (`ImageConversionModule` for `LoadImage`) and embeds the hanger.
+- **Norse font:** `UiFont.Norse(label)` puts Valheim's Norse font (`GUIManager.Instance.TMP_Norse`, a capitals font) on the window title and the appearance
+  panel's title and section headers, as the other mods do for their titles. The text is tried in capitals, and the font's table is asked for the characters
+  with `TryAddCharacters` (`HasCharacters` alone only knows characters drawn so far and wrongly rejected "Character" and "Skin"); a label the font cannot draw
+  keeps the normal font, so Russian and Chinese titles stay readable (not looked at in game). The rest of the text (tabs, list, details, buttons) is still the
+  normal font; the details headings are inside one text, so they would need their own labels to change.
+- **Items with no model are left out:** the game draws a weapon or shield from a child of its prefab named `attach...`; `Catalog.HasAttachPoint` skips
+  weapons and shields without one. In this install that is the three Dvergr crossbows (`DvergerArbalest_shoot`, `_shootAshlands`, `_shootDeepNorth`, all
+  named "Arbalest", NPC weapons) and the fists (`PlayerUnarmed`). Armor is not checked, since the leather and rag legs have no such child and are drawn
+  from the skin. If a modded weapon is missing from the list, check it has an `attach` child.
 - **Fitting room:** instantiates the `Player` prefab with `ZNetView.m_forceDisableInit = true` (the game's own character-select
   does this), at y = 9000 so nothing else sees it, removes it from `Character.s_characters` and `Player.s_players`, and renders it
   with its own camera into a `RenderTexture` shown by a `RawImage`. Three point lights light it. Items go on with

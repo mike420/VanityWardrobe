@@ -11,16 +11,19 @@ internal sealed class FittingRoom
 {
     private static readonly Vector3 Origin = new Vector3(0f, 9000f, 0f);
     private const int TextureHeight = 880;
-    private const float DefaultDistance = 3.9f;
+    private const float DefaultDistance = 4.7f;
     private const float MinDistance = 1.6f;
     private const float MaxDistance = 6f;
-    private const float EyeHeight = 0.95f;
+    private const float EyeHeight = 0.92f;
 
     private GameObject _root;
     private GameObject _dummy;
     private Camera _camera;
     private VisEquipment _vis;
     private Animator[] _animators = new Animator[0];
+    private Entry _weapon;
+    private Entry _shield;
+    private float _blockUntil;
 
     // The preview model's equipment, so a patch can tell it from the real player's
     public static VisEquipment PreviewVis { get; private set; }
@@ -63,6 +66,8 @@ internal sealed class FittingRoom
         foreach (Animator animator in _dummy.GetComponentsInChildren<Animator>())
         {
             animator.updateMode = AnimatorUpdateMode.Normal;
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            animator.fireEvents = false;
         }
         Player player = _dummy.GetComponent<Player>();
         Character.s_characters.Remove(player);
@@ -117,7 +122,58 @@ internal sealed class FittingRoom
             return;
         }
         _dummy.transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
+        if (_blockUntil > 0f && Time.time >= _blockUntil)
+        {
+            _blockUntil = 0f;
+            SetBlocking(false);
+        }
         PlaceCamera();
+    }
+
+    private Animator Main => _animators.FirstOrDefault(a => a != null && a.runtimeAnimatorController != null);
+
+    private void SetBlocking(bool on)
+    {
+        Animator animator = Main;
+        if (animator != null)
+        {
+            animator.SetBool("blocking", on);
+        }
+    }
+
+    // Plays the attack of what the model holds (or its fists), as the game does: the weapon names its animation, and one with a chain
+    // of attacks or several to pick from has the first one's name end in 0
+    public void Attack()
+    {
+        Animator animator = Main;
+        Player local = Player.m_localPlayer;
+        if (!IsOpen || animator == null || local == null)
+        {
+            return;
+        }
+        ItemDrop.ItemData.SharedData shared = _weapon != null ? _weapon.Shared : local.m_unarmedWeapon != null ? local.m_unarmedWeapon.m_itemData.m_shared : null;
+        Attack attack = shared != null ? shared.m_attack : null;
+        if (attack == null || string.IsNullOrEmpty(attack.m_attackAnimation))
+        {
+            return;
+        }
+        _blockUntil = 0f;
+        animator.SetBool("blocking", false);
+        string trigger = attack.m_attackAnimation;
+        if (attack.m_attackChainLevels > 1 || attack.m_attackRandomAnimations >= 2)
+        {
+            trigger += "0";
+        }
+        animator.SetTrigger(trigger);
+    }
+
+    public void Block()
+    {
+        if (IsOpen && Main != null)
+        {
+            SetBlocking(true);
+            _blockUntil = Time.time + 0.9f;
+        }
     }
 
     public void Rotate(float degrees)
@@ -215,6 +271,8 @@ internal sealed class FittingRoom
         _vis.SetLeftItem(left, 0, 1);
 
         // The stance the game gives a character holding these: what is in the left hand decides first (a shield), then the right
+        _weapon = weapon;
+        _shield = shield;
         Entry leftEntry = weaponInLeft ? weapon : shield;
         Entry rightEntry = weaponInLeft ? null : weapon;
         ItemDrop.ItemData.AnimationState pose = leftEntry != null ? leftEntry.Shared.m_animationState

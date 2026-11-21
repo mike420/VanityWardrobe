@@ -1,0 +1,79 @@
+using System.Collections.Generic;
+using System.IO;
+using Jotunn.Managers;
+using TMPro;
+using UnityEngine;
+
+namespace VanityWardrobe;
+
+// Valheim's Norse font, for titles. It does not have every character (Cyrillic, Chinese, some accents), so a label whose text it cannot
+// draw keeps the normal font.
+internal static class UiFont
+{
+    public static void Norse(TMP_Text label)
+    {
+        TMP_FontAsset norse = GUIManager.Instance != null ? GUIManager.Instance.TMP_Norse : null;
+        if (norse == null || label == null || string.IsNullOrEmpty(label.text))
+        {
+            return;
+        }
+        // It is a capitals font, so the text is tried in capitals first. A font that fills its table as it is used has only the characters
+        // drawn so far, so the ones the text needs are asked for (they are added if the font file has them).
+        string upper = label.text.ToUpperInvariant();
+        if (Has(norse, upper))
+        {
+            label.text = upper;
+            label.font = norse;
+        }
+        else if (Has(norse, label.text))
+        {
+            label.font = norse;
+        }
+    }
+
+    private static bool Has(TMP_FontAsset font, string text)
+    {
+        return font.HasCharacters(text) || font.TryAddCharacters(text, out _);
+    }
+
+    private static Sprite s_hanger;
+    private static readonly Dictionary<string, Sprite> s_game = new Dictionary<string, Sprite>();
+
+    // The hanger for the title bar, built into the mod
+    public static Sprite Hanger()
+    {
+        if (s_hanger == null)
+        {
+            using (Stream stream = typeof(UiFont).Assembly.GetManifestResourceStream("icons/hanger.png"))
+            {
+                if (stream != null)
+                {
+                    byte[] bytes = new byte[stream.Length];
+                    stream.Read(bytes, 0, bytes.Length);
+                    Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false) { name = "VanityWardrobe hanger", filterMode = FilterMode.Bilinear };
+                    texture.LoadImage(bytes);
+                    s_hanger = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100f);
+                }
+            }
+        }
+        return s_hanger;
+    }
+
+    // One of the game's own sprites by name (the mouse button icons), or null
+    public static Sprite GameSprite(string name)
+    {
+        if (s_game.TryGetValue(name, out Sprite known) && known != null)
+        {
+            return known;
+        }
+        foreach (Sprite sprite in Resources.FindObjectsOfTypeAll<Sprite>())
+        {
+            if (sprite != null && sprite.name == name)
+            {
+                s_game[name] = sprite;
+                return sprite;
+            }
+        }
+        return null;
+    }
+}

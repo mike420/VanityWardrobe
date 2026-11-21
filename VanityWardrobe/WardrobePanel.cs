@@ -12,10 +12,29 @@ using UnityEngine.UI;
 namespace VanityWardrobe;
 
 // Turns the fitting-room model with a drag and zooms it with the wheel
-internal sealed class PreviewInput : MonoBehaviour, IDragHandler, IScrollHandler
+internal sealed class PreviewInput : MonoBehaviour, IDragHandler, IScrollHandler, IPointerClickHandler
 {
     public Action<float> OnTurn;
     public Action<float> OnZoom;
+    public Action OnAttack;
+    public Action OnBlock;
+
+    // A left click plays the model's attack and a right click its block, as in the BetterEquipSlots preview
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.dragging)
+        {
+            return;
+        }
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            OnAttack?.Invoke();
+        }
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            OnBlock?.Invoke();
+        }
+    }
 
     public void OnDrag(PointerEventData eventData)
     {
@@ -311,11 +330,16 @@ internal sealed class WardrobePanel : MonoBehaviour
         Widgets.Place(titleBar.gameObject, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(12f, -66f), new Vector2(-12f, -12f));
         Image titleAccent = Widgets.Box(titleBar.transform, "Accent", Theme.Accent);
         Widgets.Place(titleAccent.gameObject, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(4f, 0f));
-        TMP_Text title = Widgets.Label(titleBar.transform, Translations.T("vanitywardrobe_title"), 26f, Theme.TextBright, TextAlignmentOptions.Center, bold: true);
-        Widgets.Place(title.gameObject, Vector2.zero, Vector2.one, new Vector2(120f, 0f), new Vector2(-120f, 0f));
-        Button close = Widgets.IconButton<CloseIcon>(titleBar.transform, 9f);
-        Widgets.Place(close.gameObject, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-46f, -15f), new Vector2(-12f, 15f));
-        close.onClick.AddListener(Close);
+        Image hanger = Widgets.Box(titleBar.transform, "Hanger", Color.white);
+        hanger.sprite = UiFont.Hanger();
+        hanger.enabled = hanger.sprite != null;
+        hanger.preserveAspect = true;
+        hanger.raycastTarget = false;
+        Widgets.Place(hanger.gameObject, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(18f, -17f), new Vector2(64f, 17f));
+        TMP_Text title = Widgets.Label(titleBar.transform, Translations.T("vanitywardrobe_title"), 38f, Theme.TextBright, TextAlignmentOptions.MidlineLeft, bold: true);
+        UiFont.Norse(title);
+        Widgets.Place(title.gameObject, Vector2.zero, Vector2.one, new Vector2(76f, 0f), new Vector2(-440f, 0f));
+        BuildColors(titleBar.transform);
 
         _hint = Widgets.Label(panel, "", 14f, Theme.Muted, TextAlignmentOptions.Center);
         Widgets.Place(_hint.gameObject, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(Margin, 8f), new Vector2(-Margin, 30f));
@@ -421,11 +445,33 @@ internal sealed class WardrobePanel : MonoBehaviour
         _list.content.GetComponent<VerticalLayoutGroup>().enabled = false;
         _list.content.GetComponent<ContentSizeFitter>().enabled = false;
         _list.onValueChanged.AddListener(_ => ShowRows());
+        _list.viewport.pivot = new Vector2(0f, 0.5f);   // so making room for the scrollbar takes from the right, not both sides
         _list.scrollSensitivity = 0f;
         _list.gameObject.AddComponent<StepScroll>().Init(_list, 3f * RowStride, ShowRows);
         _listNote = Widgets.Label(column, "", 13f, Theme.Muted, TextAlignmentOptions.Center);
         Widgets.Place(_listNote.gameObject, new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, new Vector2(0f, 22f));
         UpdateCategoryButtons();
+    }
+
+    // A mouse button icon and what it does, along the bottom of the preview
+    private static void MakeHint(Transform frame, float across, string spriteName, string key, string fallback)
+    {
+        GameObject hint = Widgets.Child(frame, "Hint " + spriteName);
+        Widgets.Place(hint, new Vector2(across, 0f), new Vector2(across, 0f), new Vector2(-50f, 6f), new Vector2(50f, 28f));
+        Sprite sprite = UiFont.GameSprite(spriteName);
+        if (sprite != null)
+        {
+            Image icon = Widgets.Box(hint.transform, "Icon", Color.white);
+            icon.sprite = sprite;
+            icon.preserveAspect = true;
+            icon.raycastTarget = false;
+            Widgets.Place(icon.gameObject, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(2f, -10f), new Vector2(22f, 10f));
+        }
+        string text = Localization.instance.Localize(key);
+        TMP_Text label = Widgets.Label(hint.transform, text.StartsWith("[") ? fallback : text, 16f, Theme.TextBright, TextAlignmentOptions.MidlineLeft, bold: true);
+        label.raycastTarget = false;
+        UiFont.Norse(label);
+        Widgets.Place(label.gameObject, Vector2.zero, Vector2.one, new Vector2(28f, 0f), Vector2.zero);
     }
 
     private void BuildRoom(RectTransform column)
@@ -440,6 +486,10 @@ internal sealed class WardrobePanel : MonoBehaviour
         PreviewInput input = view.AddComponent<PreviewInput>();
         input.OnTurn = degrees => _room.Rotate(degrees);
         input.OnZoom = amount => _room.Zoom(amount);
+        input.OnAttack = () => _room.Attack();
+        input.OnBlock = () => _room.Block();
+        MakeHint(frame.transform, 0.39f, "mouse1_icon", "$settings_attack", "Attack");
+        MakeHint(frame.transform, 0.61f, "mouse2_icon", "$settings_block", "Block");
 
         // Turn, my gear, no armor, clear
         RectTransform controls = BottomStrip(column, 0f, 1f, 198f, 32f);
@@ -489,6 +539,29 @@ internal sealed class WardrobePanel : MonoBehaviour
         delete.onClick.AddListener(DeleteOutfit);
     }
 
+    // The colours, in the title bar: the original, then the presets. They apply to what the details show: the item, the set, or the whole outfit.
+    private void BuildColors(Transform titleBar)
+    {
+        const float swatchWidth = 34f;
+        int count = Colors.Presets.Length + 1;
+        GameObject bar = Widgets.Child(titleBar, "Colors");
+        Widgets.Place(bar, new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(-(12f + count * swatchWidth), 8f), new Vector2(-12f, -8f));
+        for (int i = 0; i < count; i++)
+        {
+            int preset = i;
+            Button swatch = Widgets.Button(bar.transform, preset == 0 ? "x" : "", 13f);
+            Widgets.Place(swatch.gameObject, new Vector2((float)i / count, 0f), new Vector2((float)(i + 1) / count, 1f), new Vector2(1f, 0f), new Vector2(-1f, 0f));
+            if (preset > 0)
+            {
+                Color color = Colors.Presets[preset - 1].Swatch;
+                swatch.colors = Theme.Colors(color, Color.Lerp(color, Color.white, 0.25f), Color.Lerp(color, Color.black, 0.25f), color);
+                Widgets.Snap(swatch);
+            }
+            swatch.onClick.AddListener(() => ChooseColor(preset));
+            _swatches.Add(swatch);
+        }
+    }
+
     private void BuildDetails(RectTransform column)
     {
         _itemModeButton = Widgets.Button(Strip(column, 0f, 0.5f, 0f, 30f), Translations.T("vanitywardrobe_mode_item"), 15f);
@@ -509,26 +582,11 @@ internal sealed class WardrobePanel : MonoBehaviour
         Widgets.Place(plus.gameObject, new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(-34f, 0f), Vector2.zero);
         plus.onClick.AddListener(() => ChangeQuality(1));
 
-        // Colours: the original, then the presets. They apply to what the details show: the item, the set, or the whole outfit.
-        for (int i = 0; i <= Colors.Presets.Length; i++)
-        {
-            int preset = i;
-            Button swatch = Widgets.Button(Strip(column, i / 12f, (i + 1) / 12f, 72f, 26f), preset == 0 ? "x" : "", 13f);
-            Widgets.Fill(swatch.gameObject);
-            if (preset > 0)
-            {
-                Color color = Colors.Presets[preset - 1].Swatch;
-                swatch.colors = Theme.Colors(color, Color.Lerp(color, Color.white, 0.25f), Color.Lerp(color, Color.black, 0.25f), color);
-                Widgets.Snap(swatch);
-            }
-            swatch.onClick.AddListener(() => ChooseColor(preset));
-            _swatches.Add(swatch);
-        }
-
         _detailsScroll = Widgets.ScrollView(column);
+        _detailsScroll.viewport.pivot = new Vector2(0f, 0.5f);
         _detailsScroll.scrollSensitivity = 0f;
         _detailsScroll.gameObject.AddComponent<StepScroll>().Init(_detailsScroll, 90f, null);
-        Widgets.Place(_detailsScroll.gameObject, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(0f, -104f));
+        Widgets.Place(_detailsScroll.gameObject, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(0f, -72f));
         _details = Widgets.Label(_detailsScroll.content, "", 15f, Theme.Text, TextAlignmentOptions.TopLeft);
         _details.textWrappingMode = TextWrappingModes.Normal;
         _details.overflowMode = TextOverflowModes.Overflow;

@@ -127,6 +127,10 @@ internal static class Catalog
             {
                 continue;
             }
+            if ((slot == Slot.Weapon || slot == Slot.Shield) && !HasAttachPoint(prefab))
+            {
+                continue;
+            }
             string name = Localization.instance.Localize(shared.m_name);
             items.Add(new Entry
             {
@@ -420,6 +424,22 @@ internal static class Catalog
             return text;
         }
         return string.Join(" ", Words(text).Select(w => char.ToUpperInvariant(w[0]) + w.Substring(1)));
+    }
+
+    // A weapon or shield is drawn by the game from a child of its prefab named "attach...". Some have none, such as the Dvergr's own crossbows
+    // (DvergerArbalest_shoot) and the fists, which are for monsters: there is nothing to show, so they are left out. (Armor is not checked:
+    // the leather legs have no such child and are drawn from the skin.)
+    private static bool HasAttachPoint(GameObject prefab)
+    {
+        Transform root = prefab.transform;
+        for (int i = 0; i < root.childCount; i++)
+        {
+            if (root.GetChild(i).name.StartsWith("attach", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static bool TryGetSlot(ItemDrop.ItemData.ItemType type, out Slot slot)

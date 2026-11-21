@@ -46,6 +46,9 @@
       <LogicalName>translations/English.json</LogicalName>
     </EmbeddedResource>
     <None Include="Assets\Translations\**\VanityWardrobe.json" Exclude="Assets\Translations\English\VanityWardrobe.json" />
+    <EmbeddedResource Include="Assets\hanger.png">
+      <LogicalName>icons/hanger.png</LogicalName>
+    </EmbeddedResource>
     <None Include="Nexus\README.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +61,7 @@
     <Compile Include="Colors.cs" />
     <Compile Include="Recolor.cs" />
     <Compile Include="Diag.cs" />
+    <Compile Include="UiFont.cs" />
     <Compile Include="EinherjarLink.cs" />
     <Compile Include="AppearancePanel.cs" />
     <Compile Include="Outfit.cs" />
