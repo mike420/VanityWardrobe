@@ -60,6 +60,7 @@ Press **F7** in game to open the settings panel, or edit `BepInEx/config/MagicMi
 | Open Key | F9 | The key that opens and closes the wardrobe. |
 | Chest Radius | 30 | Chests within this many metres count towards the have / need totals. 0 counts only your inventory. |
 | Start With My Gear | On | The model wears what you are wearing each time the wardrobe opens. If Off, it keeps the last outfit you tried. |
+| Debug Log | Off | If On, the game's log gets lines starting `[VanityWardrobe]` about colours: the ones your game sends, the ones it receives from other players, and each item recoloured. Turn it on when asking about a problem seeing other players' colours. |
 
 <br>
 

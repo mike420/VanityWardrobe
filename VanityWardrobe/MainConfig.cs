@@ -13,6 +13,7 @@ internal static class MainConfig
     public static ConfigEntry<KeyboardShortcut> openKey;
     public static ConfigEntry<float> chestRadius;
     public static ConfigEntry<bool> startWithMyGear;
+    public static ConfigEntry<bool> debugLog;
 
     public static void Init(ConfigFile config)
     {
@@ -21,6 +22,8 @@ internal static class MainConfig
         openKey = config.BindConfigInOrder("Wardrobe", "Open Key", defaultValue: new KeyboardShortcut(UnityEngine.KeyCode.F9), "The key that opens and closes the wardrobe. It does nothing while you are typing in chat or the console.", synced: false, sectionOrder: true, settingOrder: true);
         chestRadius = config.BindConfigInOrder("Wardrobe", "Chest Radius", defaultValue: 30f, "Chests within this many metres of you count towards the have / need totals for crafting costs. 0 counts only your own inventory.", synced: false, sectionOrder: true, settingOrder: true, acceptableValues: new AcceptableValueRange<float>(0f, 100f));
         startWithMyGear = config.BindConfigInOrder("Wardrobe", "Start With My Gear", defaultValue: true, "If On, the fitting-room model wears what you are wearing each time the wardrobe opens. If Off, it keeps the last outfit you tried.", synced: false, sectionOrder: true, settingOrder: true);
+
+        debugLog = config.BindConfigInOrder("Debug", "Debug Log", defaultValue: false, "If On, the game's log (BepInEx/LogOutput.log) gets lines starting [VanityWardrobe] about colours: the ones this game sends, the ones it receives from other players, and each item that is recoloured. Turn it on when asking about a problem seeing other players' colours.", synced: false, sectionOrder: true, settingOrder: true);
 
         CarryOverOldSections(config);
     }

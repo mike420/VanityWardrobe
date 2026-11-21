@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -42,6 +43,10 @@ internal static class Recolor
         }
         Dictionary<string, int> colors = Colors.For(vis, out _);
         int preset = PresetOf(colors, itemHash);
+        if (preset > 0)
+        {
+            Diag.Log("Item put on " + Diag.Who(vis) + " is coloured " + Colors.Name(preset) + " (" + ObjectDB.instance.GetItemPrefab(itemHash)?.name + ")");
+        }
         foreach (GameObject instance in instances)
         {
             Tint(instance, preset);
@@ -60,12 +65,18 @@ internal static class Recolor
         {
             return;
         }
-        if (s_shown.TryGetValue(vis, out string shown) && shown == stamp)
+        bool seenBefore = s_shown.TryGetValue(vis, out string shown);
+        if (seenBefore && shown == stamp)
         {
             return;
         }
         s_shown.Remove(vis);
         s_shown.Add(vis, stamp);
+        // (a character seen for the first time with no colours is not worth a line)
+        if (Diag.On && vis != FittingRoom.PreviewVis && (seenBefore || (colors != null && colors.Count > 0)))
+        {
+            Diag.Log("Colours for " + Diag.Who(vis) + " are now: " + (colors == null || colors.Count == 0 ? "none" : string.Join("; ", colors.Select(c => c.Key + "=" + Colors.Name(c.Value)))) + (stamp.StartsWith("zdo") ? "  (read from their player data)" : ""));
+        }
         TintWorn(vis, colors);
     }
 
@@ -199,6 +210,10 @@ internal static class Recolor
         if (watch.ElapsedMilliseconds > 150)
         {
             Debug.Log("[VanityWardrobe] Recolouring " + source.name + " took " + watch.ElapsedMilliseconds + " ms.");
+        }
+        else
+        {
+            Diag.Log("Recoloured the texture " + source.name + " (" + source.width + "x" + source.height + ") as " + Colors.Name(preset) + " in " + watch.ElapsedMilliseconds + " ms");
         }
         return copy;
     }

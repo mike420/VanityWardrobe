@@ -203,6 +203,10 @@ internal static class Colors
             .Select(n => n + "=" + s_map[n]));
         if (text != s_published || s_publishedRevision != Revision)
         {
+            if (text != s_published)
+            {
+                Diag.Log("Publishing your worn colours to other players: '" + text + "'");
+            }
             s_published = text;
             s_publishedRevision = Revision;
             if (zdo.GetString(s_zdoKey, "") != text)

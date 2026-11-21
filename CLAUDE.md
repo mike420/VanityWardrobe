@@ -102,6 +102,9 @@ finds files itself, so it will not catch a missing csproj entry.
   Checked in game: all of red, blue, black, white, green, teal on the Bronze set; the original coming back with the x swatch; the choice saved in
   the file and applied after a restart; the torch in BallBag's hand turning blue and `Torch=6` appearing in the ZDO, then empty again on
   unequip. Not checked: another player seeing it (needs two clients), and the other languages' colour names.
+  Debug Log (config section 3, default Off, `Diag.cs`): when On the log gets `[VanityWardrobe]` lines for the colours a game receives from other
+  players (`Colours for <name> (another player) are now ...`), what it publishes, each item coloured and each texture recoloured, to diagnose multiplayer
+  reports. The cfg is read at start (editing it while the game runs does nothing; the Mod Settings panel changes it live). Checked with one player.
   Note: the gameplay keys (hotbar, Tab) do not reach the game through `gameinput.ps1`; only keys that a mod reads with `Input` (F9, Esc) do. To
   test with worn gear, add a temporary key in the plugin that calls `Player.EquipItem`.
 
