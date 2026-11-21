@@ -10,7 +10,7 @@
     <td>1.0.0</td>
     <td>
         <ul>
-            <li>First release.</li>
+            <li>Initial release.</li>
         </ul>
     </td>
   </tr>

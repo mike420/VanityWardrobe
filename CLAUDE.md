@@ -24,6 +24,8 @@ VanityWardrobe/              the project
   Catalog.cs                 item list and set grouping, built from ObjectDB when the window opens
   Biomes.cs                  works out each item's biome from the world (see Biomes below); reads locations in the background; biomes.cache
   Colors.cs, Recolor.cs      per-item colour presets: the choices (colors.txt), the ZDO sync, and the texture recolouring (see Recolor below)
+  AppearancePanel.cs         the panel to the right of the window: sex, skin, hair, beard, hair colour, and with Einherjar Bodies eyes and underwear
+  EinherjarLink.cs           finds Einherjar Bodies' look API by GUID at run time (same pattern as VillagePlebs' EinherjarLook.cs); no hard dependency
   Outfit.cs                  what the model wears (one item per Slot), and SavedOutfits (BepInEx/config/VanityWardrobe/outfits.txt)
   FittingRoom.cs             the preview model, its camera and lights; MyGear() reads what the player wears from the ZDO
   WardrobePanel.cs           the whole window; also PreviewInput (drag to turn, wheel to zoom)
@@ -111,6 +113,21 @@ finds files itself, so it will not catch a missing csproj entry.
   and hover are drawn by `ColourRow` for the rows currently bound. The game reports a wheel notch as a small unpredictable amount (0.05 here), so
   the lists use `StepScroll` (3 rows, or 90 px for the details, per notch in the wheel's direction) with the ScrollRect's own sensitivity at 0.
 
+- **Appearance panel:** the window is 890 px tall (`MaxHeight`) and an `AppearancePanel` hangs off its top right corner (a child of the window, so it
+  moves with it; the pair is centred together and the window narrows to leave room). It edits the player's own character at once, like
+  Einherjar Bodies' own window, with no Done or Cancel: the vanilla part uses `Player.SetPlayerModel`, `SetSkinColor`, `SetHairColor`, `SetHair`, `SetBeard`
+  (so it works without any other mod); Eye Glow, Iris and Underwear only appear when `EinherjarLink.Available`, and go through
+  `EinherjarLookApi` (`GetField`, `SetField`, `ApplyLook`, `UnderwearPart`, `SetUnderwearPart`, `ApplyUnderwear`; the stored look is read from
+  `player.m_customData["einherjar_eyes_v1"]` and `["einherjar_underwear_v1"]`). After each edit `FittingRoom.RefreshLook` copies the look to the
+  preview, and `EinherjarLookApi.UseLookOf(previewVis, localVis)` makes the preview show the player's eyes and underwear. The game's skin and hair
+  colour ranges come from `PlayerCustomizaton.OnEnable` (a Harmony postfix, only fires at the main menu), with Einherjar's usual values until then. The
+  chevron arrows are drawn icons, because `<` and `>` in a 24 px text button did not show. The labels reuse EinherjarBodies' translations
+  (`vanitywardrobe_ap_*`).
+  Checked in game: the layout against the mock, next hair style, Female and Male (the beard row appears and goes), the underwear colour showing on
+  the preview, the panel filling the window's height, and no Einherjar Bodies installed (only Character, Skin, Hair, Beard and Hair Color show).
+  Not checked: the eye and underwear sliders by dragging, the hair colour picker by dragging, skin tone, and what Done-less live editing does when a
+  player closes the window mid-way (it simply keeps the change).
+
 ## Building and testing
 
 - The real build is **Visual Studio** (`VanityWardrobe.sln`). `dotnet build` does not work on these old-style projects (it does not
@@ -141,6 +158,12 @@ finds files itself, so it will not catch a missing csproj entry.
 - Characters in this user's game use the **EinherjarBodies** mod's bodies, so the model also exercises that mod. The model
   faces the camera at yaw 330 (160 showed its back).
 - The user's saves are real: entering a world to test is fine, but do not change or delete anything in it.
+  The game saves the character now and then, and the appearance panel changes it: before testing it, copy the character's `.fch` and `.fch.old`
+  from `AppData/LocalLow/IronGate/Valheim/characters_local`, and put them back after (compare md5) so the look is as the user left it.
+- BepInEx loads every DLL under `plugins/` however deep, so to test without a mod move its folder out of `plugins/` (renaming the folder is not enough),
+  and move it back afterwards.
+- The game window may now be borderless 1920x1080 at (0,0) with no title bar, so screenshot coordinates differ from the older ones in this file;
+  take a screenshot and read the positions. The user may also close the game while testing.
 
 ## How this user wants to work
 

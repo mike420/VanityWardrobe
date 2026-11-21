@@ -57,6 +57,8 @@
     <Compile Include="Biomes.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="Recolor.cs" />
+    <Compile Include="EinherjarLink.cs" />
+    <Compile Include="AppearancePanel.cs" />
     <Compile Include="Outfit.cs" />
     <Compile Include="FittingRoom.cs" />
     <Compile Include="WardrobePanel.cs" />

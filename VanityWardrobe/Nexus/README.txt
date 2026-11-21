@@ -9,12 +9,6 @@ Even £1 or $1 would be greatly appreciated and would help more than you might t
 Thank you for your support, and happy gaming! ...... (A Paypal account is NOT required!)
 [url=https://www.paypal.com/donate/?hosted_button_id=BN8HEWHRMAREU][img]https://imgup.uk/i/n7Sg7WK9.png[/img][/url]
 
-[size=5][b]Recommended Plugins[/b][/size]
-
-[list]
-[*]<a href="https://valheim.hexium.gg/mods/MagicMike/EinherjarBodies">Einherjar Bodies</a>
-[/list]
-
 [size=5][b]Features[/b][/size]
 
 [list]
@@ -24,6 +18,7 @@ Thank you for your support, and happy gaming! ...... (A Paypal account is NOT re
 [*][b]Mix and match.[/b] Wear a helmet from one set, a chest from another, any cape, and a weapon with a shield. Click a slot to take that item off.
 [*][b]Outfit totals.[/b] The Outfit tab shows the combined stats, which set bonuses you have, and the materials for the whole look.
 [*][b]Saved outfits.[/b] Give an outfit a name, save it, and put it back on later.
+[*][b]Appearance.[/b] A panel beside the window changes your character: male or female, skin tone, hair, beard and hair colour. With <a href="https://valheim.hexium.gg/mods/MagicMike/EinherjarBodies">Einherjar Bodies</a> installed it also has the eye glow, iris and underwear colour settings. Changes are made to your character as you make them, and the model follows. It works without Einherjar Bodies.
 [*][b]Recolor.[/b] Pick one of 11 colours (red, orange, yellow, green, teal, blue, purple, pink, black, white, grey) for an item, a set or a whole outfit. The mod finds the item's main colour and changes only that, so metal, leather and trim keep theirs. The colour shows on the preview and on your own character, and other players who have the mod see it too (it is stored with your character, no server install needed). Players without the mod see the original colours. Items on the ground or on armor stands keep their own colours, and items with unusual shaders may change only partly. Your choices are kept in [b]BepInEx/config/VanityWardrobe/colors.txt[/b].
 [*][b]Biome filter.[/b] Every item and set is placed in the biome its materials come from, worked out from the world itself (trees, rocks, creatures, dungeons and recipes), so items from other mods are placed too. Pick a biome, or switch on "and earlier" to see everything up to it. The details show the biome. The first time you load a world it reads the locations in the background for about two minutes and keeps the result in [b]BepInEx/config/VanityWardrobe/biomes.cache[/b].
 [*][b]Role and source filters.[/b] Show only Mage, Tank, Damage or Archer gear, worked out from each item's stats, and only items from Valheim or from one particular mod.

@@ -70,6 +70,7 @@ internal sealed class FittingRoom
         _vis = _dummy.GetComponent<VisEquipment>();
         PreviewVis = _vis;
         CopyLook(local);
+        EinherjarLink.UseLookOf(_vis, local.m_visEquipment);
 
         Texture = new RenderTexture(Mathf.Clamp(Mathf.RoundToInt(TextureHeight * aspect), 320, 1760), TextureHeight, 24, RenderTextureFormat.ARGB32) { name = "VanityWardrobe preview", antiAliasing = 1 };
         Texture.Create();
@@ -103,6 +104,7 @@ internal sealed class FittingRoom
         _root = null;
         _dummy = null;
         _camera = null;
+        EinherjarLink.UseLookOf(_vis, null);
         _vis = null;
         PreviewVis = null;
         Texture = null;
@@ -129,6 +131,21 @@ internal sealed class FittingRoom
         // Closer in, the camera looks higher up, so the head and shoulders fill the view
         float closeness = Mathf.InverseLerp(DefaultDistance, MinDistance, _distance);
         _focus = Vector3.up * Mathf.Lerp(EyeHeight, 1.35f, closeness);
+    }
+
+    // Shows the player's look again after it was changed (the appearance panel): body, skin, hair and beard
+    public void RefreshLook()
+    {
+        Player local = Player.m_localPlayer;
+        if (!IsOpen || _vis == null || local == null)
+        {
+            return;
+        }
+        _vis.SetModel(local.GetPlayerModel());
+        _vis.SetSkinColor(local.m_skinColor);
+        _vis.SetHairColor(local.m_hairColor);
+        _vis.SetHairItem(local.GetHair().GetStableHashCode());
+        _vis.SetBeardItem(local.GetBeard().GetStableHashCode());
     }
 
     // The same look as the player's: body, skin, hair and beard

@@ -63,7 +63,8 @@ internal sealed class StepScroll : MonoBehaviour, IScrollHandler
 internal sealed class WardrobePanel : MonoBehaviour
 {
     private const float MaxWidth = 1320f;
-    private const float MaxHeight = 800f;
+    private const float MaxHeight = 890f;
+    private const float AppearanceGap = 6f;   // between the window and the appearance panel beside it
     private const float Margin = 14f;
     private const float RowHeight = 46f;
     private const float RowStride = 48f;   // a row and the gap under it
@@ -76,6 +77,7 @@ internal sealed class WardrobePanel : MonoBehaviour
     public static bool IsOpen { get; private set; }
 
     private readonly FittingRoom _room = new FittingRoom();
+    private readonly AppearancePanel _appearance = new AppearancePanel();
     private readonly Outfit _outfit = new Outfit();
 
     private RectTransform _panel;
@@ -140,6 +142,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         if (IsOpen)
         {
             s_instance.CheckBiomes();
+            s_instance._appearance.Sync();
         }
         ShortcutOf(out bool pressed);
         if (!pressed)
@@ -169,6 +172,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         if (s_instance != null)
         {
             s_instance.Close();
+            s_instance._appearance.Dispose();
             Destroy(s_instance.gameObject);
         }
     }
@@ -200,7 +204,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         Widgets.Fill(overlay.gameObject);
         WardrobePanel panel = overlay.gameObject.AddComponent<WardrobePanel>();
         Vector2 size = ((RectTransform)canvas).rect.size;
-        panel.Build(Mathf.Min(MaxWidth, size.x * 0.94f), Mathf.Min(MaxHeight, size.y * 0.92f));
+        panel.Build(Mathf.Min(MaxWidth, size.x * 0.94f - AppearancePanel.Width - AppearanceGap), Mathf.Min(MaxHeight, size.y * 0.92f));
         overlay.gameObject.SetActive(false);
         return panel;
     }
@@ -231,6 +235,8 @@ internal sealed class WardrobePanel : MonoBehaviour
         _hint.text = Translations.T("vanitywardrobe_close_hint", MainConfig.openKey.Value.ToString());
         _preview.texture = _room.Texture;
         RefreshSaved();
+        _appearance.SetActive(true);
+        _appearance.Open();
         FillSources();
         FillBiomes();
         _biomeRevision = Biomes.Revision;
@@ -295,6 +301,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         RectTransform panelRect = (RectTransform)panelImage.transform;
         panelRect.anchorMin = panelRect.anchorMax = new Vector2(0.5f, 0.5f);
         panelRect.sizeDelta = new Vector2(width, height);
+        panelRect.anchoredPosition = new Vector2(-(AppearancePanel.Width + AppearanceGap) / 2f, 0f);
         _panel = panelRect;
         Transform panel = panelImage.transform;
         DragMove drag = panelImage.gameObject.AddComponent<DragMove>();
@@ -319,6 +326,14 @@ internal sealed class WardrobePanel : MonoBehaviour
         BuildList(left);
         BuildRoom(middle);
         BuildDetails(right);
+
+        // The appearance panel hangs off the window's top right corner, so it moves with it
+        _appearance.Build(panel);
+        _appearance.Panel.anchorMin = _appearance.Panel.anchorMax = Vector2.one;
+        _appearance.Panel.pivot = new Vector2(0f, 1f);
+        _appearance.Panel.anchoredPosition = new Vector2(AppearanceGap, 0f);
+        _appearance.Changed = () => _room.RefreshLook();
+        _appearance.MinHeight = height;
     }
 
     private static RectTransform Column(Transform panel, string name, float from, float to)

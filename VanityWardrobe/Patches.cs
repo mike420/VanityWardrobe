@@ -76,4 +76,12 @@ internal static class Patches
     {
         Recolor.Watch(__instance);
     }
+
+    // The character creator, which only exists at the main menu, holds the game's skin and hair colour ranges
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerCustomizaton), "OnEnable")]
+    private static void CreatorShown(PlayerCustomizaton __instance)
+    {
+        AppearancePanel.ReadRanges(__instance);
+    }
 }
