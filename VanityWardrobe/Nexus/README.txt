@@ -1,4 +1,5 @@
-﻿[size=6][b]Vanity Wardrobe[/b][/size]
+﻿![](https://imgup.uk/i/RlDzGrHb.png)
+[size=6][b]Vanity Wardrobe[/b][/size]
 
 An in-game wardrobe and fitting room. Press [b]F9[/b] to browse every armor set, cape, weapon and shield in your game, including everything your other mods add. Try them on a model of your own character and see exactly what it takes to craft them.
 
