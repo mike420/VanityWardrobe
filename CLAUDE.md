@@ -140,19 +140,11 @@ finds files itself, so it will not catch a missing csproj entry.
   the lists use `StepScroll` (3 rows, or 90 px for the details, per notch in the wheel's direction) with the ScrollRect's own sensitivity at 0.
 
 - **Appearance panel:** the window is 890 px tall (`MaxHeight`) and an `AppearancePanel` hangs off its top right corner (a child of the window, so it
-  moves with it; the pair is centred together and the window narrows to leave room). It edits the player's own character at once, like
-  Einherjar Bodies' own window, with no Done or Cancel: the vanilla part uses `Player.SetPlayerModel`, `SetSkinColor`, `SetHairColor`, `SetHair`, `SetBeard`
-  (so it works without any other mod); Eye Glow, Iris and Underwear only appear when `EinherjarLink.Available`, and go through
-  `EinherjarLookApi` (`GetField`, `SetField`, `ApplyLook`, `UnderwearPart`, `SetUnderwearPart`, `ApplyUnderwear`; the stored look is read from
-  `player.m_customData["einherjar_eyes_v1"]` and `["einherjar_underwear_v1"]`). After each edit `FittingRoom.RefreshLook` copies the look to the
-  preview, and `EinherjarLookApi.UseLookOf(previewVis, localVis)` makes the preview show the player's eyes and underwear. The game's skin and hair
-  colour ranges come from `PlayerCustomizaton.OnEnable` (a Harmony postfix, only fires at the main menu), with Einherjar's usual values until then. The
-  chevron arrows are drawn icons, because `<` and `>` in a 24 px text button did not show. The labels reuse EinherjarBodies' translations
-  (`vanitywardrobe_ap_*`).
+  moves with it; the pair is centred together and the window narrows to leave room). It is a PREVIEW ONLY and must never change the real character (the user's rule: the wardrobe is for previewing). The panel keeps its own copy of the look (`Model`, `Skin`, `HairColor`, `Hair`, `Beard`, and the Einherjar eye and underwear look strings), read from the player in `AppearancePanel.Open` each time the window opens; edits change only that copy and `Changed` makes `FittingRoom.ShowLook` put it on the model through `VisEquipment.SetModel` / `SetSkinColor` / `SetHairColor` / `SetHairItem` / `SetBeardItem`. Eye Glow, Iris and Underwear only appear when `EinherjarLink.Available`: the strings are edited with `EinherjarLookApi.SetField` / `SetUnderwearPart` (`EinherjarLink.EditEye` / `EditUnderwear`) and shown with `ApplyLook` / `ApplyUnderwear` on the preview model's own GameObject (the model has no ZDO, so Einherjar keeps them in the model's own `m_customData`, not the player's). `FittingRoom.Open` copies the player's two Einherjar keys (`einherjar_eyes_v1`, `einherjar_underwear_v1`) to the model with `EinherjarLink.CopyLook` (`UseLookOf` is no longer used). The game's skin and hair colour ranges come from `PlayerCustomizaton.OnEnable` (a Harmony postfix, only fires at the main menu), with Einherjar's usual values until then. The chevron arrows are drawn icons, because `<` and `>` in a 24 px text button did not show. The labels reuse EinherjarBodies' translations (`vanitywardrobe_ap_*`).
   Checked in game: the layout against the mock, next hair style, Female and Male (the beard row appears and goes), the underwear colour showing on
   the preview, the panel filling the window's height, and no Einherjar Bodies installed (only Character, Skin, Hair, Beard and Hair Color show).
-  Not checked: the eye and underwear sliders by dragging, the hair colour picker by dragging, skin tone, and what Done-less live editing does when a
-  player closes the window mid-way (it simply keeps the change).
+  Also checked after it was made preview-only: changing sex, hair and the underwear hue shows on the model, and closing and reopening the window brings the
+  player's real look back (nothing was written to the character). Not checked: the eye sliders, the hair colour picker by dragging, skin tone.
 
 - **Pinned recipes (like 95Shade's Pin Those Recipes, built from its README only):** middle-click a row in the wardrobe list (`MiddleClick` component added in `MakeRow`,
   `WardrobePanel.PinRow`) pins that item or set at the window's quality, or unpins it. `Pins.cs` keeps them in `player.m_customData["vanitywardrobe_pins"]` (saved with the

@@ -364,7 +364,8 @@ internal sealed class WardrobePanel : MonoBehaviour
         _appearance.Panel.anchorMin = _appearance.Panel.anchorMax = Vector2.one;
         _appearance.Panel.pivot = new Vector2(0f, 1f);
         _appearance.Panel.anchoredPosition = new Vector2(AppearanceGap, 0f);
-        _appearance.Changed = () => _room.RefreshLook();
+        _appearance.Changed = () => _room.ShowLook(_appearance.Model, _appearance.Skin, _appearance.HairColor, _appearance.Hair, _appearance.Beard);
+        _appearance.Target = () => _room.Model;
         _appearance.MinHeight = height;
     }
 

@@ -35,6 +35,9 @@ internal sealed class FittingRoom
 
     public bool IsOpen => _dummy != null;
 
+    // The model itself, for showing it eyes and underwear
+    public GameObject Model => _dummy;
+
     // aspect is the width over the height of the frame the picture is shown in, so the model is not stretched
     public void Open(float aspect)
     {
@@ -75,7 +78,10 @@ internal sealed class FittingRoom
         _vis = _dummy.GetComponent<VisEquipment>();
         PreviewVis = _vis;
         CopyLook(local);
-        EinherjarLink.UseLookOf(_vis, local.m_visEquipment);
+        if (EinherjarLink.Available)
+        {
+            EinherjarLink.CopyLook(local, player);   // (the model keeps its own copy: nothing done here reaches the real character)
+        }
 
         Texture = new RenderTexture(Mathf.Clamp(Mathf.RoundToInt(TextureHeight * aspect), 320, 1760), TextureHeight, 24, RenderTextureFormat.ARGB32) { name = "VanityWardrobe preview", antiAliasing = 1 };
         Texture.Create();
@@ -109,7 +115,6 @@ internal sealed class FittingRoom
         _root = null;
         _dummy = null;
         _camera = null;
-        EinherjarLink.UseLookOf(_vis, null);
         _vis = null;
         PreviewVis = null;
         Texture = null;
@@ -189,19 +194,18 @@ internal sealed class FittingRoom
         _focus = Vector3.up * Mathf.Lerp(EyeHeight, 1.35f, closeness);
     }
 
-    // Shows the player's look again after it was changed (the appearance panel): body, skin, hair and beard
-    public void RefreshLook()
+    // Shows a look on the model: body, skin, hair and beard. Only the model changes, never the player.
+    public void ShowLook(int model, Vector3 skin, Vector3 hairColor, string hair, string beard)
     {
-        Player local = Player.m_localPlayer;
-        if (!IsOpen || _vis == null || local == null)
+        if (!IsOpen || _vis == null)
         {
             return;
         }
-        _vis.SetModel(local.GetPlayerModel());
-        _vis.SetSkinColor(local.m_skinColor);
-        _vis.SetHairColor(local.m_hairColor);
-        _vis.SetHairItem(local.GetHair().GetStableHashCode());
-        _vis.SetBeardItem(local.GetBeard().GetStableHashCode());
+        _vis.SetModel(model);
+        _vis.SetSkinColor(skin);
+        _vis.SetHairColor(hairColor);
+        _vis.SetHairItem(hair.GetStableHashCode());
+        _vis.SetBeardItem(beard.GetStableHashCode());
     }
 
     // The same look as the player's: body, skin, hair and beard

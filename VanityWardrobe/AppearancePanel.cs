@@ -164,8 +164,18 @@ internal sealed class AppearancePanel
     // The panel is at least this tall (the height of the window beside it)
     public float MinHeight { get; set; }
 
-    // Called after a change, so the fitting-room model can show it
+    // Called after a change, so the fitting-room model can show it. The panel keeps its own copy of the look (read from the player each time the
+    // window opens) and changes only that: nothing here is written to the player's character.
     public Action Changed;
+    public Func<GameObject> Target;
+
+    public int Model { get; private set; }
+    public Vector3 Skin { get; private set; }
+    public Vector3 HairColor { get; private set; }
+    public string Hair { get; private set; } = "";
+    public string Beard { get; private set; } = "";
+    private string _eyes = "";
+    private string _underwearLook = "";
 
     private readonly List<Part> _parts = new List<Part>();
     private readonly List<Choice> _choices = new List<Choice>();
@@ -240,17 +250,17 @@ internal sealed class AppearancePanel
         _male = HalfButton(row.transform, T("male"), 0.5f, () => SetBody(MaleModel));
 
         Header("skin", SectionGap);
-        _skinTone = Slider("tone", false, 0f, v => WithPlayer(p =>
+        _skinTone = Slider("tone", false, 0f, v =>
         {
-            p.SetSkinColor(Utils.ColorToVec3(Color.Lerp(s_skin0, s_skin1, v)));
+            Skin = Utils.ColorToVec3(Color.Lerp(s_skin0, s_skin1, v));
             Changed?.Invoke();
-        }), null, false);
+        }, null, false);
 
         Header("hair", SectionGap);
-        ChoiceRow(_hairs, () => Me.GetHair(), name => WithPlayer(p => p.SetHair(name)), null);
-        Func<bool> male = () => Me != null && Me.GetPlayerModel() == MaleModel;
+        ChoiceRow(_hairs, () => Hair, name => Hair = name, null);
+        Func<bool> male = () => Model == MaleModel;
         Header("beard", SectionGap, male);
-        ChoiceRow(_beards, () => Me.GetBeard(), name => WithPlayer(p => p.SetBeard(name)), male);
+        ChoiceRow(_beards, () => Beard, name => Beard = name, male);
         RectTransform hairHeader = Header("hair_color", SectionGap);
         _hairSwatch = Swatch(hairHeader);
         _hairReset = ResetButton(hairHeader, 36f);
@@ -367,7 +377,7 @@ internal sealed class AppearancePanel
         Widgets.Place(button.gameObject, new Vector2(anchor, 0.5f), new Vector2(anchor, 0.5f), new Vector2(x, -ArrowSize / 2f), new Vector2(x + ArrowSize, ArrowSize / 2f));
         button.onClick.AddListener(() =>
         {
-            if (items.Count > 0 && Me != null)
+            if (items.Count > 0)
             {
                 int index = Mathf.Max(items.FindIndex(item => item.name == current()), 0);
                 apply(items[(index + step + items.Count) % items.Count].name);
@@ -483,25 +493,31 @@ internal sealed class AppearancePanel
             return;
         }
         LoadStyles();
-        _skinTone.Show(NearestTone(s_skin0, s_skin1, player.m_skinColor));
+        // Start from the player's own look; from here on only the model's copy changes
+        Model = player.GetPlayerModel();
+        Skin = player.m_skinColor;
+        HairColor = player.m_hairColor;
+        Hair = player.GetHair();
+        Beard = player.GetBeard();
+        _skinTone.Show(NearestTone(s_skin0, s_skin1, Skin));
         if (EinherjarLink.Available)
         {
-            string eyes = EinherjarLink.Eyes(player);
-            _eyeHue.Show(EinherjarLink.Get(eyes, "EyeHue"));
-            _eyeSaturation.Show(EinherjarLink.Get(eyes, "EyeSaturation"));
-            _eyeBrightness.Show(EinherjarLink.Get(eyes, "EyeValue"));
-            _eyeGlow.Show(EinherjarLink.Get(eyes, "Glow"));
-            _irisSize.Show(EinherjarLink.Get(eyes, "IrisSize"));
-            _hideIris.SetIsOnWithoutNotify(EinherjarLink.Get(eyes, "HideIris") > 0.5f);
-            string underwear = EinherjarLink.Underwear(player);
+            _eyes = EinherjarLink.Eyes(player);
+            _hideIris.SetIsOnWithoutNotify(EinherjarLink.Get(_eyes, "HideIris") > 0.5f);
+            _eyeHue.Show(EinherjarLink.Get(_eyes, "EyeHue"));
+            _eyeSaturation.Show(EinherjarLink.Get(_eyes, "EyeSaturation"));
+            _eyeBrightness.Show(EinherjarLink.Get(_eyes, "EyeValue"));
+            _eyeGlow.Show(EinherjarLink.Get(_eyes, "Glow"));
+            _irisSize.Show(EinherjarLink.Get(_eyes, "IrisSize"));
+            _underwearLook = EinherjarLink.Underwear(player);
             for (int i = 0; i < 3; i++)
             {
-                _underwear[i].Show(EinherjarLink.UnderwearPart(underwear, i));
+                _underwear[i].Show(EinherjarLink.UnderwearPart(_underwearLook, i));
             }
             ShowEyes();
             ShowUnderwear();
         }
-        Color.RGBToHSV(ToColor(player.m_hairColor), out _hairHue, out _hairSaturation, out _hairValue);
+        Color.RGBToHSV(ToColor(HairColor), out _hairHue, out _hairSaturation, out _hairValue);
         ShowHair();
         _laidOutModel = -1;
         Sync();
@@ -525,7 +541,7 @@ internal sealed class AppearancePanel
                 choice.Label.text = text;
             }
         }
-        int model = player.GetPlayerModel();
+        int model = Model;
         if (model != _laidOutModel)
         {
             _laidOutModel = model;
@@ -611,59 +627,43 @@ internal sealed class AppearancePanel
 
     // ---- changing it ------------------------------------------------------------------------------------------------------
 
-    private static void WithPlayer(Action<Player> action)
-    {
-        Player player = Me;
-        if (player != null)
-        {
-            action(player);
-        }
-    }
-
     private void SetBody(int model)
     {
-        WithPlayer(p =>
+        Model = model;
+        if (model == FemaleModel)
         {
-            p.SetPlayerModel(model);
-            if (model == FemaleModel)
-            {
-                p.SetBeard(s_noBeard);
-            }
-        });
+            Beard = s_noBeard;
+        }
         Changed?.Invoke();
     }
 
     private void EditEye(string field, float value)
     {
-        WithPlayer(p => EinherjarLink.SetEye(p, field, value));
+        _eyes = EinherjarLink.EditEye(_eyes, field, value);
+        EinherjarLink.ShowEyes(Target?.Invoke(), _eyes);
         ShowEyes();
-        Changed?.Invoke();
     }
 
     private void ShowEyes()
     {
-        Player player = Me;
-        if (player != null && EinherjarLink.Available)
+        if (EinherjarLink.Available)
         {
-            string eyes = EinherjarLink.Eyes(player);
-            _eyeSwatch.color = Color.HSVToRGB(EinherjarLink.Get(eyes, "EyeHue"), EinherjarLink.Get(eyes, "EyeSaturation"), EinherjarLink.Get(eyes, "EyeValue"));
+            _eyeSwatch.color = Color.HSVToRGB(EinherjarLink.Get(_eyes, "EyeHue"), EinherjarLink.Get(_eyes, "EyeSaturation"), EinherjarLink.Get(_eyes, "EyeValue"));
         }
     }
 
     private void EditUnderwear(int part, float value)
     {
-        WithPlayer(p => EinherjarLink.SetUnderwear(p, part, value));
+        _underwearLook = EinherjarLink.EditUnderwear(_underwearLook, part, value);
+        EinherjarLink.ShowUnderwear(Target?.Invoke(), _underwearLook);
         ShowUnderwear();
-        Changed?.Invoke();
     }
 
     private void ShowUnderwear()
     {
-        Player player = Me;
-        if (player != null && EinherjarLink.Available)
+        if (EinherjarLink.Available)
         {
-            string colour = EinherjarLink.Underwear(player);
-            _underwearSwatch.color = Color.HSVToRGB(EinherjarLink.UnderwearPart(colour, 0), EinherjarLink.UnderwearPart(colour, 1), EinherjarLink.UnderwearPart(colour, 2));
+            _underwearSwatch.color = Color.HSVToRGB(EinherjarLink.UnderwearPart(_underwearLook, 0), EinherjarLink.UnderwearPart(_underwearLook, 1), EinherjarLink.UnderwearPart(_underwearLook, 2));
         }
     }
 
@@ -672,7 +672,7 @@ internal sealed class AppearancePanel
         _hairHue = hue;
         _hairSaturation = saturation;
         _hairValue = value;
-        WithPlayer(p => p.SetHairColor(Utils.ColorToVec3(Color.HSVToRGB(hue, saturation, value))));
+        HairColor = Utils.ColorToVec3(Color.HSVToRGB(hue, saturation, value));
         ShowHair();
         Changed?.Invoke();
     }

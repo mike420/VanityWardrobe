@@ -27,7 +27,6 @@ internal static class EinherjarLink
     private static Func<string, int, float> s_underwearPart;
     private static Func<string, int, float, string> s_setUnderwearPart;
     private static Action<GameObject, string> s_applyUnderwear;
-    private static Action<VisEquipment, VisEquipment> s_useLookOf;
 
     public static bool Available
     {
@@ -65,7 +64,6 @@ internal static class EinherjarLink
             s_underwearPart = Bind<Func<string, int, float>>(api, "UnderwearPart");
             s_setUnderwearPart = Bind<Func<string, int, float, string>>(api, "SetUnderwearPart");
             s_applyUnderwear = Bind<Action<GameObject, string>>(api, "ApplyUnderwear");
-            s_useLookOf = Bind<Action<VisEquipment, VisEquipment>>(api, "UseLookOf");
             s_applyLook = Bind<Action<GameObject, string>>(api, "ApplyLook");   // (last: it is what Available checks)
             Debug.Log("[VanityWardrobe] Einherjar Bodies found: the appearance panel has its eye and underwear settings.");
         }
@@ -93,15 +91,35 @@ internal static class EinherjarLink
 
     public static float Get(string look, string field) => Available ? s_getField(look, field) : 0f;
 
-    public static void SetEye(Player player, string field, float value)
+    // The eyes with one field changed (a look is text; nothing is stored anywhere)
+    public static string EditEye(string look, string field, float value) => Available ? s_setField(look, field, value) : look;
+
+    // Shows these eyes on a character. For the fitting-room model this is only kept with that model, not with the player.
+    public static void ShowEyes(GameObject target, string look)
     {
-        if (Available)
+        if (Available && target != null)
         {
-            s_applyLook(player.gameObject, s_setField(Eyes(player), field, value));
+            s_applyLook(target, look);
         }
     }
 
     // ---- underwear
+
+    // Gives one player the same eyes and underwear colour as another, by copying what the mod keeps with the player. Used for the fitting-room model.
+    public static void CopyLook(Player from, Player to)
+    {
+        foreach (string key in new[] { EyesKey, UnderwearKey })
+        {
+            if (from.m_customData.TryGetValue(key, out string value))
+            {
+                to.m_customData[key] = value;
+            }
+            else
+            {
+                to.m_customData.Remove(key);
+            }
+        }
+    }
 
     public static string Underwear(Player player)
     {
@@ -112,22 +130,13 @@ internal static class EinherjarLink
 
     public static float UnderwearPart(string colour, int part) => Available ? s_underwearPart(colour, part) : 0f;
 
-    public static void SetUnderwear(Player player, int part, float value)
-    {
-        if (Available)
-        {
-            s_applyUnderwear(player.gameObject, s_setUnderwearPart(Underwear(player), part, value));
-        }
-    }
+    public static string EditUnderwear(string colour, int part, float value) => Available ? s_setUnderwearPart(colour, part, value) : colour;
 
-    // ---- other characters
-
-    // Makes a model that has no look of its own (the fitting-room model) show another character's eyes and underwear. null stops it.
-    public static void UseLookOf(VisEquipment shown, VisEquipment source)
+    public static void ShowUnderwear(GameObject target, string colour)
     {
-        if (Available)
+        if (Available && target != null)
         {
-            s_useLookOf(shown, source);
+            s_applyUnderwear(target, colour);
         }
     }
 }
