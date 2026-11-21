@@ -76,6 +76,14 @@ internal static class PinPanel
         public string Name;
     }
 
+    private sealed class PinView
+    {
+        public TMP_Text Head;
+        public List<KeyValuePair<ItemDrop, int>> Need;
+    }
+
+    private static readonly List<PinView> s_views = new List<PinView>();
+
     private static readonly Color Enough = new Color(0.55f, 0.85f, 0.45f, 1f);
     private static readonly Color Short = new Color(0.95f, 0.4f, 0.35f, 1f);
     private static readonly Color Back = new Color(0f, 0f, 0f, 0.55f);
@@ -211,12 +219,13 @@ internal static class PinPanel
             Object.Destroy(s_root.GetChild(i).gameObject);
         }
         s_lines.Clear();
+        s_views.Clear();
         int shown = 0;
         int hidden = 0;
         foreach (Pin pin in Pins.All)
         {
-            List<KeyValuePair<ItemDrop, int>> need = Stock.Needed(pin.Prefabs, pin.Quality);
-            if (need.Count == 0 && !pin.Prefabs.Any(p => ObjectDB.instance != null && ObjectDB.instance.GetItemPrefab(p) != null))
+            List<KeyValuePair<ItemDrop, int>> need = Stock.Needed(pin.Remaining, pin.Quality);
+            if (need.Count == 0 && !pin.Remaining.Any(p => ObjectDB.instance != null && ObjectDB.instance.GetItemPrefab(p) != null))
             {
                 continue;   // an item that is not in the game now (a mod taken out): kept, not shown
             }
@@ -282,6 +291,7 @@ internal static class PinPanel
         head.raycastTarget = false;
         head.textWrappingMode = TextWrappingModes.NoWrap;
         head.overflowMode = TextOverflowModes.Ellipsis;
+        s_views.Add(new PinView { Head = head, Need = need });
         if (pin.Collapsed)
         {
             return;
@@ -305,6 +315,14 @@ internal static class PinPanel
 
     private static void UpdateCounts()
     {
+        // A pin's title turns green when everything it needs is in hand
+        foreach (PinView view in s_views)
+        {
+            if (view.Head != null)
+            {
+                view.Head.color = view.Need.Count > 0 && view.Need.All(pair => Stock.Have(pair.Key) >= pair.Value) ? Enough : Theme.TextBright;
+            }
+        }
         foreach (CountLine line in s_lines)
         {
             if (line.Text == null)

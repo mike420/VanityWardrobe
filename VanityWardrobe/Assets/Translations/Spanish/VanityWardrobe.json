@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Vanity Wardrobe",
+  "vanitywardrobe_title": "Vanity Wardrobe: Preview weapons and armor",
   "vanitywardrobe_close_hint": "Pulsa $1 o Esc para cerrar   |   Arrastra el modelo para girarlo, rueda del ratón para acercar",
   "vanitywardrobe_tab_sets": "Conjuntos",
   "vanitywardrobe_tab_helmets": "Cascos",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "Calidad $1",
   "vanitywardrobe_pin_added": "$1 fijado",
   "vanitywardrobe_pin_removed": "$1 desfijado",
-  "vanitywardrobe_pin_hint": "Clic central para fijar la receta"
+  "vanitywardrobe_pin_hint": "Clic central para fijar la receta",
+  "vanitywardrobe_item_info": "Información del objeto",
+  "vanitywardrobe_not_saved": "Los cambios no se guardan en el personaje"
 }

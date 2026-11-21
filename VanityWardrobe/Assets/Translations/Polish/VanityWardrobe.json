@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Vanity Wardrobe",
+  "vanitywardrobe_title": "Vanity Wardrobe: Preview weapons and armor",
   "vanitywardrobe_close_hint": "Naciśnij $1 lub Esc, aby zamknąć   |   Przeciągnij model, aby go obrócić, kółko myszy przybliża",
   "vanitywardrobe_tab_sets": "Zestawy",
   "vanitywardrobe_tab_helmets": "Hełmy",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "Jakość $1",
   "vanitywardrobe_pin_added": "Przypięto: $1",
   "vanitywardrobe_pin_removed": "Odpięto: $1",
-  "vanitywardrobe_pin_hint": "Środkowy przycisk: przypnij recepturę"
+  "vanitywardrobe_pin_hint": "Środkowy przycisk: przypnij recepturę",
+  "vanitywardrobe_item_info": "Informacje o przedmiocie",
+  "vanitywardrobe_not_saved": "Zmiany nie są zapisywane w postaci"
 }

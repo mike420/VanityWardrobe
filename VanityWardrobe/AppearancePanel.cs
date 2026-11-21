@@ -266,6 +266,14 @@ internal sealed class AppearancePanel
         _hairReset = ResetButton(hairHeader, 36f);
         _hairReset.onClick.AddListener(ResetHair);
         BuildHairPicker();
+        Image footLine = Widgets.Box(Panel, "FooterLine", Theme.Accent);
+        footLine.raycastTarget = false;
+        Widgets.Place(footLine.gameObject, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(12f, 43f), new Vector2(-12f, 45f));
+        TMP_Text note = Widgets.Label(Panel, Translations.T("vanitywardrobe_not_saved"), 14f, Theme.Muted, TextAlignmentOptions.Center);
+        note.enableAutoSizing = true;
+        note.fontSizeMin = 10f;
+        note.fontSizeMax = 14f;
+        Widgets.Place(note.gameObject, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(8f, 8f), new Vector2(-8f, 30f));
         Panel.gameObject.SetActive(false);
     }
 

@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Vanity Wardrobe",
+  "vanitywardrobe_title": "Vanity Wardrobe: Preview weapons and armor",
   "vanitywardrobe_close_hint": "Kapatmak için $1 veya Esc'ye bas   |   Modeli döndürmek için sürükle, yakınlaştırmak için tekerleği kullan",
   "vanitywardrobe_tab_sets": "Setler",
   "vanitywardrobe_tab_helmets": "Miğferler",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "Kalite $1",
   "vanitywardrobe_pin_added": "$1 sabitlendi",
   "vanitywardrobe_pin_removed": "$1 sabitlemesi kaldırıldı",
-  "vanitywardrobe_pin_hint": "Tarifi sabitlemek için orta tık"
+  "vanitywardrobe_pin_hint": "Tarifi sabitlemek için orta tık",
+  "vanitywardrobe_item_info": "Eşya Bilgisi",
+  "vanitywardrobe_not_saved": "Değişiklikler karaktere kaydedilmez"
 }

@@ -21,5 +21,5 @@ mkdir -p "$HERE/out"
 cd "$HERE/../VanityWardrobe"
 FILES=$(find . ../Shared -name "*.cs" -not -path "./obj/*" -not -path "./bin/*" | sort -u)
 dotnet "C:/Program Files/dotnet/sdk/11.0.100/Roslyn/bincore/csc.dll" -nologo -target:library -langversion:12 -nostdlib -noconfig -nullable:annotations \
-  -out:"$HERE/out/VanityWardrobe.dll" "${R[@]}" -resource:Assets/Translations/English/VanityWardrobe.json,translations/English.json -resource:Assets/hanger.png,icons/hanger.png $FILES 2>&1 | grep -E "error" | head -${1:-30}
+  -out:"$HERE/out/VanityWardrobe.dll" "${R[@]}" -resource:Assets/Translations/English/VanityWardrobe.json,translations/English.json -resource:Assets/hanger.png,icons/hanger.png -resource:Assets/pin.png,icons/pin.png $FILES 2>&1 | grep -E "error" | head -${1:-30}
 echo "check done (no error lines above means it compiled)"

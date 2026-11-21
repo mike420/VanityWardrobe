@@ -116,6 +116,7 @@ internal sealed class WardrobePanel : MonoBehaviour
     private bool _andEarlier;
     private readonly List<Button> _swatches = new List<Button>();
     private int _biomeRevision = -1;
+    private int _pinRevision = -1;
     private RectTransform _searchRect;
     private ScrollRect _list;
     private TMP_Text _listNote;
@@ -128,6 +129,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         public TMP_Text Title;
         public TMP_Text Subtitle;
         public Image Icon;
+        public Image Pin;
         public object Key;
     }
 
@@ -310,6 +312,11 @@ internal sealed class WardrobePanel : MonoBehaviour
             return;
         }
         _room.Update();
+        if (_pinRevision != Pins.Revision)
+        {
+            _pinRevision = Pins.Revision;
+            ShowPins();   // (a pin was added or taken off, for example by crafting the item)
+        }
         if (Time.unscaledTime >= _nextRefresh)
         {
             _nextRefresh = Time.unscaledTime + RefreshInterval;
@@ -344,6 +351,10 @@ internal sealed class WardrobePanel : MonoBehaviour
         Widgets.Place(hanger.gameObject, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(18f, -17f), new Vector2(64f, 17f));
         TMP_Text title = Widgets.Label(titleBar.transform, Translations.T("vanitywardrobe_title"), 38f, Theme.TextBright, TextAlignmentOptions.MidlineLeft, bold: true);
         UiFont.Norse(title);
+        title.enableAutoSizing = true;
+        title.fontSizeMin = 22f;
+        title.fontSizeMax = 38f;
+        title.textWrappingMode = TextWrappingModes.NoWrap;
         Widgets.Place(title.gameObject, Vector2.zero, Vector2.one, new Vector2(76f, 0f), new Vector2(-440f, 0f));
         BuildColors(titleBar.transform);
 
@@ -357,6 +368,21 @@ internal sealed class WardrobePanel : MonoBehaviour
         pinHint.fontSizeMin = 10f;
         pinHint.fontSizeMax = 14f;
         Widgets.Place(pinHint.gameObject, new Vector2(0f, 0f), new Vector2(0.30f, 0f), new Vector2(Margin, 8f), new Vector2(0f, 30f));
+        TMP_Text itemInfo = Widgets.Label(panel, Translations.T("vanitywardrobe_item_info"), 14f, Theme.Muted, TextAlignmentOptions.Center);
+        itemInfo.enableAutoSizing = true;
+        itemInfo.fontSizeMin = 10f;
+        itemInfo.fontSizeMax = 14f;
+        Widgets.Place(itemInfo.gameObject, new Vector2(0.68f, 0f), new Vector2(1f, 0f), new Vector2(0f, 8f), new Vector2(-Margin, 30f));
+        // A line over the bottom strip, and dividers between its three parts, as in the mock
+        Image footLine = Widgets.Box(panel, "FooterLine", Theme.Accent);
+        footLine.raycastTarget = false;
+        Widgets.Place(footLine.gameObject, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(Margin, 43f), new Vector2(-Margin, 45f));
+        foreach (float x in new[] { 0.30f, 0.68f })
+        {
+            Image divider = Widgets.Box(panel, "FooterDivider", Theme.Accent);
+            divider.raycastTarget = false;
+            Widgets.Place(divider.gameObject, new Vector2(x, 0f), new Vector2(x, 0f), new Vector2(-1f, 8f), new Vector2(1f, 38f));
+        }
 
         RectTransform left = Column(panel, "List", 0f, 0.30f);
         RectTransform middle = Column(panel, "Room", 0.30f, 0.68f);
@@ -789,6 +815,12 @@ internal sealed class WardrobePanel : MonoBehaviour
         view.Icon.preserveAspect = true;
         view.Icon.raycastTarget = false;
         Widgets.Place(view.Icon.gameObject, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(6f, -18f), new Vector2(42f, 18f));
+        view.Pin = Widgets.Box(view.Button.transform, "Pin", Color.white);
+        view.Pin.sprite = UiFont.Pin();
+        view.Pin.enabled = false;
+        view.Pin.preserveAspect = true;
+        view.Pin.raycastTarget = false;
+        Widgets.Place(view.Pin.gameObject, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-34f, -30f), new Vector2(-8f, -4f));
         view.Button.onClick.AddListener(() => Choose(view.Key));
         view.Button.gameObject.AddComponent<MiddleClick>().Action = () => PinRow(view.Key);
         return view;
@@ -797,25 +829,41 @@ internal sealed class WardrobePanel : MonoBehaviour
     // Middle click on an item or set pins its recipe under the minimap (at the quality chosen here), or unpins it if it is pinned
     private void PinRow(object key)
     {
-        string title;
-        List<string> prefabs;
-        if (key is SetEntry set)
-        {
-            title = set.Name;
-            prefabs = set.Pieces.Select(p => p.Prefab).ToList();
-        }
-        else if (key is Entry entry)
-        {
-            title = entry.Name;
-            prefabs = new List<string> { entry.Prefab };
-        }
-        else
+        List<string> prefabs = PrefabsOf(key, out string title);
+        if (prefabs == null)
         {
             return;
         }
         bool was = Pins.IsPinned(prefabs);
         Pins.Toggle(title, prefabs, _quality);
         Player.m_localPlayer?.Message(MessageHud.MessageType.TopLeft, Translations.T(was ? "vanitywardrobe_pin_removed" : "vanitywardrobe_pin_added", title));
+        ShowPins();
+    }
+
+    private static List<string> PrefabsOf(object key, out string title)
+    {
+        title = null;
+        if (key is SetEntry set)
+        {
+            title = set.Name;
+            return set.Pieces.Select(p => p.Prefab).ToList();
+        }
+        if (key is Entry entry)
+        {
+            title = entry.Name;
+            return new List<string> { entry.Prefab };
+        }
+        return null;
+    }
+
+    // The pin on each row in view that is pinned
+    private void ShowPins()
+    {
+        foreach (RowView view in _pool)
+        {
+            List<string> prefabs = view.Key == null ? null : PrefabsOf(view.Key, out _);
+            view.Pin.enabled = view.Pin.sprite != null && prefabs != null && Pins.IsPinned(prefabs);
+        }
     }
 
     // Puts the rows that are in view on the list. A few rows are made once and reused as the list scrolls, so a list of any length
@@ -856,6 +904,7 @@ internal sealed class WardrobePanel : MonoBehaviour
             view.Root.SetActive(true);
             ColourRow(view);
         }
+        ShowPins();
     }
 
     private void ColourRow(RowView view)

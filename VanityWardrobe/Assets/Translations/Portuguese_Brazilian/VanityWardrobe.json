@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Vanity Wardrobe",
+  "vanitywardrobe_title": "Vanity Wardrobe: Preview weapons and armor",
   "vanitywardrobe_close_hint": "Pressione $1 ou Esc para fechar   |   Arraste o modelo para girar, role o mouse para dar zoom",
   "vanitywardrobe_tab_sets": "Conjuntos",
   "vanitywardrobe_tab_helmets": "Elmos",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "Qualidade $1",
   "vanitywardrobe_pin_added": "$1 fixado",
   "vanitywardrobe_pin_removed": "$1 desafixado",
-  "vanitywardrobe_pin_hint": "Clique do meio para fixar a receita"
+  "vanitywardrobe_pin_hint": "Clique do meio para fixar a receita",
+  "vanitywardrobe_item_info": "Informações do item",
+  "vanitywardrobe_not_saved": "As alterações não são salvas no personagem"
 }

@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Vanity Wardrobe",
+  "vanitywardrobe_title": "Vanity Wardrobe: Preview weapons and armor",
   "vanitywardrobe_close_hint": "Press $1 or Esc to close   |   Drag the model to turn it, scroll over it to zoom",
   "vanitywardrobe_tab_sets": "Sets",
   "vanitywardrobe_tab_helmets": "Helmets",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "Quality $1",
   "vanitywardrobe_pin_added": "Pinned $1",
   "vanitywardrobe_pin_removed": "Unpinned $1",
-  "vanitywardrobe_pin_hint": "Middle click to pin recipe"
+  "vanitywardrobe_pin_hint": "Middle click to pin recipe",
+  "vanitywardrobe_item_info": "Item Information",
+  "vanitywardrobe_not_saved": "Changes are not saved to character"
 }

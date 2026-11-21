@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Vanity Wardrobe",
+  "vanitywardrobe_title": "Vanity Wardrobe: Preview weapons and armor",
   "vanitywardrobe_close_hint": "Appuyez sur $1 ou Échap pour fermer   |   Faites glisser le modèle pour le tourner, molette pour zoomer",
   "vanitywardrobe_tab_sets": "Sets",
   "vanitywardrobe_tab_helmets": "Casques",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "Qualité $1",
   "vanitywardrobe_pin_added": "$1 épinglé",
   "vanitywardrobe_pin_removed": "$1 désépinglé",
-  "vanitywardrobe_pin_hint": "Clic molette pour épingler la recette"
+  "vanitywardrobe_pin_hint": "Clic molette pour épingler la recette",
+  "vanitywardrobe_item_info": "Informations sur l'objet",
+  "vanitywardrobe_not_saved": "Les changements ne sont pas enregistrés sur le personnage"
 }

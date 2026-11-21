@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Vanity Wardrobe",
+  "vanitywardrobe_title": "Vanity Wardrobe: Preview weapons and armor",
   "vanitywardrobe_close_hint": "按 $1 或 Esc 关闭   |   拖动模型可旋转，滚动鼠标滚轮可缩放",
   "vanitywardrobe_tab_sets": "套装",
   "vanitywardrobe_tab_helmets": "头盔",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "品质 $1",
   "vanitywardrobe_pin_added": "已固定 $1",
   "vanitywardrobe_pin_removed": "已取消固定 $1",
-  "vanitywardrobe_pin_hint": "鼠标中键固定配方"
+  "vanitywardrobe_pin_hint": "鼠标中键固定配方",
+  "vanitywardrobe_item_info": "物品信息",
+  "vanitywardrobe_not_saved": "更改不会保存到角色"
 }

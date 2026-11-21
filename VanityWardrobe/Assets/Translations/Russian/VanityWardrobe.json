@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Примерочная",
+  "vanitywardrobe_title": "Примерочная: просмотр оружия и брони",
   "vanitywardrobe_close_hint": "Нажмите $1 или Esc, чтобы закрыть   |   Перетаскивайте модель, чтобы повернуть, колесо над ней меняет масштаб",
   "vanitywardrobe_tab_sets": "Наборы",
   "vanitywardrobe_tab_helmets": "Шлемы",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "Качество $1",
   "vanitywardrobe_pin_added": "Закреплено: $1",
   "vanitywardrobe_pin_removed": "Откреплено: $1",
-  "vanitywardrobe_pin_hint": "Средняя кнопка мыши: закрепить рецепт"
+  "vanitywardrobe_pin_hint": "Средняя кнопка мыши: закрепить рецепт",
+  "vanitywardrobe_item_info": "Сведения о предмете",
+  "vanitywardrobe_not_saved": "Изменения не сохраняются в персонаже"
 }

@@ -60,6 +60,28 @@ internal static class UiFont
         return s_hanger;
     }
 
+    private static Sprite s_pin;
+
+    // The red pin shown on a pinned list row, built into the mod
+    public static Sprite Pin()
+    {
+        if (s_pin == null)
+        {
+            using (Stream stream = typeof(UiFont).Assembly.GetManifestResourceStream("icons/pin.png"))
+            {
+                if (stream != null)
+                {
+                    MemoryStream memory = new MemoryStream();
+                    stream.CopyTo(memory);
+                    Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false) { name = "VanityWardrobe pin", filterMode = FilterMode.Bilinear };
+                    texture.LoadImage(memory.ToArray());
+                    s_pin = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100f);
+                }
+            }
+        }
+        return s_pin;
+    }
+
     // One of the game's own sprites by name (the mouse button icons), or null
     public static Sprite GameSprite(string name)
     {

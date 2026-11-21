@@ -84,4 +84,55 @@ internal static class Patches
     {
         AppearancePanel.ReadRanges(__instance);
     }
+
+    // Crafting a pinned item (or upgrading it to the pinned quality) takes it off the pinned list. Crafting worked if the player's items of that
+    // kind changed: another one, a bigger stack, or a higher quality.
+    private static Recipe s_crafting;
+
+    private static int CraftSignature(Player player, string sharedName)
+    {
+        int sum = 0;
+        foreach (ItemDrop.ItemData item in player.GetInventory().GetAllItems())
+        {
+            if (item.m_shared.m_name == sharedName)
+            {
+                sum += item.m_stack * 1000 + item.m_quality;
+            }
+        }
+        return sum;
+    }
+
+    [HarmonyPatch(typeof(InventoryGui), "DoCrafting")]
+    [HarmonyPrefix]
+    private static void BeforeCrafting(InventoryGui __instance, Player player, out int __state)
+    {
+        Recipe recipe = s_crafting = __instance.m_craftRecipe;
+        __state = recipe != null && recipe.m_item != null && player != null ? CraftSignature(player, recipe.m_item.m_itemData.m_shared.m_name) : -1;
+    }
+
+    [HarmonyPatch(typeof(InventoryGui), "DoCrafting")]
+    [HarmonyPostfix]
+    private static void AfterCrafting(Player player, int __state)
+    {
+        Recipe recipe = s_crafting;
+        s_crafting = null;
+        if (__state < 0 || recipe == null || recipe.m_item == null || player == null)
+        {
+            return;
+        }
+        string sharedName = recipe.m_item.m_itemData.m_shared.m_name;
+        if (CraftSignature(player, sharedName) == __state)
+        {
+            return;
+        }
+        int quality = 1;
+        foreach (ItemDrop.ItemData item in player.GetInventory().GetAllItems())
+        {
+            if (item.m_shared.m_name == sharedName)
+            {
+                quality = Mathf.Max(quality, item.m_quality);
+            }
+        }
+        Pins.Crafted(recipe.m_item.gameObject.name, quality);
+    }
 }

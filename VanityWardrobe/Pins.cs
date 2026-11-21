@@ -11,6 +11,9 @@ internal sealed class Pin
     public int Quality = 1;
     public bool Collapsed;
     public List<string> Prefabs = new List<string>();
+    public HashSet<string> Done = new HashSet<string>();   // the pieces of a set that have been crafted already
+
+    public List<string> Remaining => Prefabs.Where(p => !Done.Contains(p)).ToList();
 
     public string Key => Pins.KeyOf(Prefabs);
 }
@@ -44,7 +47,7 @@ internal static class Pins
             foreach (string part in text.Split('|'))
             {
                 string[] fields = part.Split('~');
-                if (fields.Length == 4 && int.TryParse(fields[1], out int quality))
+                if ((fields.Length == 4 || fields.Length == 5) && int.TryParse(fields[1], out int quality))
                 {
                     All.Add(new Pin
                     {
@@ -52,6 +55,7 @@ internal static class Pins
                         Quality = Mathf.Max(1, quality),
                         Collapsed = fields[2] == "1",
                         Prefabs = fields[3].Split('+').Where(p => p.Length > 0).ToList(),
+                        Done = new HashSet<string>(fields.Length == 5 ? fields[4].Split('+').Where(p => p.Length > 0) : new string[0]),
                     });
                 }
             }
@@ -72,7 +76,7 @@ internal static class Pins
             }
             else
             {
-                player.m_customData[DataKey] = string.Join("|", All.Select(p => Clean(p.Title) + "~" + p.Quality + "~" + (p.Collapsed ? "1" : "0") + "~" + p.Key));
+                player.m_customData[DataKey] = string.Join("|", All.Select(p => Clean(p.Title) + "~" + p.Quality + "~" + (p.Collapsed ? "1" : "0") + "~" + p.Key + "~" + string.Join("+", p.Done)));
             }
         }
         Revision++;
@@ -109,6 +113,33 @@ internal static class Pins
     public static void Remove(Pin pin)
     {
         if (All.Remove(pin))
+        {
+            Save();
+        }
+    }
+
+    // The player has crafted (or upgraded to) this item: it is ticked off every pin that wants it at that quality or lower, and a pin with
+    // nothing left to craft is removed
+    public static void Crafted(string prefab, int quality)
+    {
+        if (Player.m_localPlayer == null)
+        {
+            return;
+        }
+        EnsureLoaded(Player.m_localPlayer);
+        bool changed = false;
+        foreach (Pin pin in All.ToList())
+        {
+            if (pin.Quality <= quality && pin.Prefabs.Contains(prefab) && pin.Done.Add(prefab))
+            {
+                changed = true;
+                if (pin.Remaining.Count == 0)
+                {
+                    All.Remove(pin);
+                }
+            }
+        }
+        if (changed)
         {
             Save();
         }

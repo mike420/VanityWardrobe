@@ -49,6 +49,9 @@
     <EmbeddedResource Include="Assets\hanger.png">
       <LogicalName>icons/hanger.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Assets\pin.png">
+      <LogicalName>icons/pin.png</LogicalName>
+    </EmbeddedResource>
     <None Include="Nexus\README.txt" />
   </ItemGroup>
   <ItemGroup>

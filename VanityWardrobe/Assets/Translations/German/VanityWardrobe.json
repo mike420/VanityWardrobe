@@ -1,5 +1,5 @@
 {
-  "vanitywardrobe_title": "Vanity Wardrobe",
+  "vanitywardrobe_title": "Vanity Wardrobe: Preview weapons and armor",
   "vanitywardrobe_close_hint": "Drücke $1 oder Esc zum Schließen   |   Modell ziehen zum Drehen, Mausrad zum Zoomen",
   "vanitywardrobe_tab_sets": "Sets",
   "vanitywardrobe_tab_helmets": "Helme",
@@ -96,5 +96,7 @@
   "vanitywardrobe_pin_quality": "Qualität $1",
   "vanitywardrobe_pin_added": "$1 angeheftet",
   "vanitywardrobe_pin_removed": "$1 gelöst",
-  "vanitywardrobe_pin_hint": "Mittelklick: Rezept anheften"
+  "vanitywardrobe_pin_hint": "Mittelklick: Rezept anheften",
+  "vanitywardrobe_item_info": "Gegenstandsinfo",
+  "vanitywardrobe_not_saved": "Änderungen werden nicht am Charakter gespeichert"
 }
