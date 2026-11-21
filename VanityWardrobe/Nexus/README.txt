@@ -27,6 +27,7 @@ Thank you for your support, and happy gaming! ...... (A Paypal account is NOT re
 [*][b]My gear and No armor.[/b] Put on what you are wearing now, or take the armor off.
 [*]Uses the same panel style as the Mod Settings window.
 [*]Client side: you do not need the server to have it, and it does not change gameplay.
+[*][b]Keyboard and mouse only.[/b] There is no game controller support: the window is opened with a key and used with the mouse.
 [/list]
 
 [size=5][b]Using it[/b][/size]
