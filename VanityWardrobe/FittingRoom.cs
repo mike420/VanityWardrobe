@@ -11,10 +11,18 @@ internal sealed class FittingRoom
 {
     private static readonly Vector3 Origin = new Vector3(0f, 9000f, 0f);
     private const int TextureHeight = 880;
-    private const float DefaultDistance = 4.7f;
-    private const float MinDistance = 1.6f;
-    private const float MaxDistance = 6f;
-    private const float EyeHeight = 0.92f;
+    // The camera, as in BetterEquipSlots' preview: a zoom from 0 (the whole body, FarDistance away looking at FarHeight) to 1 (head and shoulders,
+    // NearDistance away looking at NearHeight), eased towards where the wheel put it; and a pan up and down the body from dragging, kept so the height
+    // looked at stays between LowestLook and HighestLook.
+    private const float FarDistance = 4.7f;
+    private const float NearDistance = 1.2f;
+    private const float FarHeight = 0.92f;
+    private const float NearHeight = 1.55f;
+    private const float ZoomPerNotch = 0.2f;
+    private const float ZoomSeconds = 0.05f;
+    private const float PanPerPixel = 0.004f;
+    private const float LowestLook = 0.15f;
+    private const float HighestLook = 1.85f;
 
     private GameObject _root;
     private GameObject _dummy;
@@ -28,8 +36,10 @@ internal sealed class FittingRoom
     // The preview model's equipment, so a patch can tell it from the real player's
     public static VisEquipment PreviewVis { get; private set; }
     private float _yaw = 330f;
-    private float _distance = DefaultDistance;
-    private Vector3 _focus = Vector3.up * EyeHeight;
+    private float _zoom;
+    private float _zoomTarget;
+    private float _zoomSpeed;
+    private float _pan;
 
     public RenderTexture Texture { get; private set; }
 
@@ -52,6 +62,7 @@ internal sealed class FittingRoom
             return;
         }
 
+        _zoom = _zoomTarget = _zoomSpeed = _pan = 0f;
         _root = new GameObject("VanityWardrobeRoom");
         _root.transform.position = Origin;
 
@@ -132,6 +143,15 @@ internal sealed class FittingRoom
             _blockUntil = 0f;
             SetBlocking(false);
         }
+        if (_zoom != _zoomTarget)
+        {
+            _zoom = Mathf.SmoothDamp(_zoom, _zoomTarget, ref _zoomSpeed, ZoomSeconds, float.PositiveInfinity, Time.unscaledDeltaTime);
+            if (Mathf.Abs(_zoom - _zoomTarget) < 0.001f)
+            {
+                _zoom = _zoomTarget;
+                _zoomSpeed = 0f;
+            }
+        }
         PlaceCamera();
     }
 
@@ -186,12 +206,16 @@ internal sealed class FittingRoom
         _yaw = Mathf.Repeat(_yaw + degrees, 360f);
     }
 
-    public void Zoom(float amount)
+    // Moves the camera up or down the body as the pointer is dragged (the picture follows the pointer)
+    public void Pan(float pixels)
     {
-        _distance = Mathf.Clamp(_distance - amount, MinDistance, MaxDistance);
-        // Closer in, the camera looks higher up, so the head and shoulders fill the view
-        float closeness = Mathf.InverseLerp(DefaultDistance, MinDistance, _distance);
-        _focus = Vector3.up * Mathf.Lerp(EyeHeight, 1.35f, closeness);
+        _pan -= pixels * PanPerPixel;
+    }
+
+    // Wheel notches: each brings the camera the same share closer (positive) or further away
+    public void Zoom(float notches)
+    {
+        _zoomTarget = Mathf.Clamp01(_zoomTarget + Mathf.Clamp(notches, -1f, 1f) * ZoomPerNotch);
     }
 
     // Shows a look on the model: body, skin, hair and beard. Only the model changes, never the player.
@@ -311,8 +335,11 @@ internal sealed class FittingRoom
 
     private void PlaceCamera()
     {
-        Vector3 focus = Origin + _focus;
-        _camera.transform.position = focus + new Vector3(0f, 0.15f, _distance);
-        _camera.transform.LookAt(focus);
+        float distance = FarDistance * Mathf.Pow(NearDistance / FarDistance, _zoom);
+        float height = Mathf.Lerp(FarHeight, NearHeight, Mathf.InverseLerp(FarDistance, NearDistance, distance));
+        _pan = Mathf.Clamp(_pan, LowestLook - height, HighestLook - height);
+        height += _pan;
+        _camera.transform.position = Origin + new Vector3(0f, height, distance);
+        _camera.transform.LookAt(Origin + new Vector3(0f, height, 0f));
     }
 }

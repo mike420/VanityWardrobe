@@ -16,6 +16,7 @@ internal sealed class PreviewInput : MonoBehaviour, IDragHandler, IScrollHandler
 {
     public Action<float> OnTurn;
     public Action<float> OnZoom;
+    public Action<float> OnPan;
     public Action OnAttack;
     public Action OnBlock;
 
@@ -36,15 +37,20 @@ internal sealed class PreviewInput : MonoBehaviour, IDragHandler, IScrollHandler
         }
     }
 
+    // As in BetterEquipSlots' preview: dragging with the left or right button turns the model (sideways) and moves the camera up and down (up and down)
     public void OnDrag(PointerEventData eventData)
     {
-        OnTurn?.Invoke(-eventData.delta.x * 0.45f);
+        if (eventData.button == PointerEventData.InputButton.Left || eventData.button == PointerEventData.InputButton.Right)
+        {
+            OnTurn?.Invoke(-eventData.delta.x * 0.5f);
+            OnPan?.Invoke(eventData.delta.y);
+        }
     }
 
     public void OnScroll(PointerEventData eventData)
     {
-        // The game reports only 0.05 per wheel notch, so use the direction and a fixed step
-        OnZoom?.Invoke(Mathf.Sign(eventData.scrollDelta.y) * (eventData.scrollDelta.y == 0f ? 0f : 0.3f));
+        // The game reports only 0.05 per wheel notch, so one notch is taken as the direction alone
+        OnZoom?.Invoke(Mathf.Sign(eventData.scrollDelta.y) * (eventData.scrollDelta.y == 0f ? 0f : 1f));
     }
 }
 
@@ -495,6 +501,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         PreviewInput input = view.AddComponent<PreviewInput>();
         input.OnTurn = degrees => _room.Rotate(degrees);
         input.OnZoom = amount => _room.Zoom(amount);
+        input.OnPan = pixels => _room.Pan(pixels);
         input.OnAttack = () => _room.Attack();
         input.OnBlock = () => _room.Block();
         MakeHint(frame.transform, 0.39f, "mouse1_icon", "$settings_attack", "Attack");

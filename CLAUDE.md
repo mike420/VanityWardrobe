@@ -146,6 +146,11 @@ finds files itself, so it will not catch a missing csproj entry.
   Also checked after it was made preview-only: changing sex, hair and the underwear hue shows on the model, and closing and reopening the window brings the
   player's real look back (nothing was written to the character). Not checked: the eye sliders, the hair colour picker by dragging, skin tone.
 
+- **Camera (same as BetterEquipSlots' `PlayerPreview`, ported from its source):** a left or right drag on the preview turns the model (`-delta.x * 0.5`) and pans the camera
+  (`FittingRoom.Pan`, 0.004 m per pixel, the height looked at kept between 0.15 and 1.85 m). Zoom is 0 (whole body, 4.7 m away looking at 0.92 m) to 1 (1.2 m away looking at 1.55 m),
+  exponential in distance, 0.2 per wheel notch, eased with `SmoothDamp` over 0.05 s; one notch counts as the direction only because the game reports 0.05. Pan and zoom reset
+  each time the room opens. Test drags with relative `mouse_event` MOVE steps (`SetCursorPos` steps do not drive drags).
+
 - **Pinned recipes (like 95Shade's Pin Those Recipes, built from its README only):** middle-click a row in the wardrobe list (`MiddleClick` component added in `MakeRow`,
   `WardrobePanel.PinRow`) pins that item or set at the window's quality, or unpins it. `Pins.cs` keeps them in `player.m_customData["vanitywardrobe_pins"]` (saved with the
   character; `Title~Quality~Collapsed~Prefab+Prefab` joined by `|`). `PinPanel.cs` draws them as a child of `Hud.m_rootObject`, right-aligned under `Minimap.m_smallRoot`

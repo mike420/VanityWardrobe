@@ -44,7 +44,7 @@ Thank you for your support, and happy gaming! ⚔️  ...... (A Paypal account i
 | Action | How |
 |---|---|
 | Open or close | **F9** (can be changed), or **Esc** |
-| Turn the model | Drag on it, or use the **<** and **>** buttons |
+| Turn the model and move the camera up or down | Drag on it with the left or right mouse button (sideways turns, up and down moves the camera), or use the **<** and **>** buttons to turn |
 | Zoom | Mouse wheel over the model |
 | Attack or block | Left click or right click the model |
 | Pin or unpin a recipe | Middle-click an item or set in the list |

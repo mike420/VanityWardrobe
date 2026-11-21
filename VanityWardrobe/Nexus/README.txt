@@ -36,7 +36,7 @@ Thank you for your support, and happy gaming! ...... (A Paypal account is NOT re
 [list]
 [*][b]Action[/b] (default How): 
 [*][b]Open or close[/b] (default [b]F9[/b] (can be changed), or [b]Esc[/b]): 
-[*][b]Turn the model[/b] (default Drag on it, or use the [b]<[/b] and [b]>[/b] buttons): 
+[*][b]Turn the model and move the camera up or down[/b] (default Drag on it with the left or right mouse button (sideways turns, up and down moves the camera), or use the [b]<[/b] and [b]>[/b] buttons to turn): 
 [*][b]Zoom[/b] (default Mouse wheel over the model): 
 [*][b]Attack or block[/b] (default Left click or right click the model): 
 [*][b]Pin or unpin a recipe[/b] (default Middle-click an item or set in the list): 
