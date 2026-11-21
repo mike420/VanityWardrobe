@@ -38,7 +38,7 @@ Thank you for your support, and happy gaming! ⚔️  ...... (A Paypal account i
 
 <br>
 
-## 🎮 Using it:
+## 🖱️ Using it:
 
 | Action | How |
 |---|---|
