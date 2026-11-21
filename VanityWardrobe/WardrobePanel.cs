@@ -140,7 +140,8 @@ internal sealed class WardrobePanel : MonoBehaviour
     private Button _itemModeButton;
     private Button _outfitModeButton;
     private TMP_Text _qualityLabel;
-    private TMP_Text _details;
+    private readonly List<GameObject> _cards = new List<GameObject>();
+    private readonly List<TMP_Text> _cardTexts = new List<TMP_Text>();
     private ScrollRect _detailsScroll;
     private RawImage _preview;
     private TMP_InputField _outfitName;
@@ -587,9 +588,10 @@ internal sealed class WardrobePanel : MonoBehaviour
         _detailsScroll.scrollSensitivity = 0f;
         _detailsScroll.gameObject.AddComponent<StepScroll>().Init(_detailsScroll, 90f, null);
         Widgets.Place(_detailsScroll.gameObject, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(0f, -72f));
-        _details = Widgets.Label(_detailsScroll.content, "", 15f, Theme.Text, TextAlignmentOptions.TopLeft);
-        _details.textWrappingMode = TextWrappingModes.Normal;
-        _details.overflowMode = TextOverflowModes.Overflow;
+        // The details are a stack of cards, one for each section
+        VerticalLayoutGroup stack = _detailsScroll.content.GetComponent<VerticalLayoutGroup>();
+        stack.spacing = 8f;
+        stack.padding = new RectOffset(0, 0, 2, 6);
         UpdateModeButtons();
     }
 
@@ -1027,7 +1029,7 @@ internal sealed class WardrobePanel : MonoBehaviour
 
     private void RefreshDetails()
     {
-        if (_details == null)
+        if (_detailsScroll == null)
         {
             return;
         }
@@ -1047,13 +1049,49 @@ internal sealed class WardrobePanel : MonoBehaviour
         {
             AppendItem(text, (Entry)_selected);
         }
-        _details.text = text.ToString();
+        ShowCards(text.ToString());
         UpdateSwatches();
     }
 
+    // A heading starts a new card: the details text is cut at these marks
+    private const char SectionBreak = '\u0001';
+
     private static string Heading(string text)
     {
-        return "\n<size=18><b><color=" + Theme.Tag(Theme.TextBright) + ">" + text + "</color></b></size>\n";
+        return SectionBreak + "<size=18><b><color=" + Theme.Tag(Theme.TextBright) + ">" + text + "</color></b></size>\n";
+    }
+
+    private static readonly Color CardColor = new Color(0.09f, 0.065f, 0.05f, 0.5f);
+    private static readonly Color CardOutline = new Color(0.42f, 0.27f, 0.14f, 0.55f);
+
+    // Shows the details as one card for each section, with room inside each so the text does not touch its edge
+    private void ShowCards(string all)
+    {
+        string[] sections = all.Split(SectionBreak).Select(section => section.Trim('\n', ' ')).Where(section => section.Length > 0).ToArray();
+        while (_cards.Count < sections.Length)
+        {
+            Image card = Widgets.Box(_detailsScroll.content, "Card", CardColor, CardOutline, 1f);
+            VerticalLayoutGroup inside = card.gameObject.AddComponent<VerticalLayoutGroup>();
+            inside.padding = new RectOffset(16, 16, 12, 14);
+            inside.childControlWidth = true;
+            inside.childControlHeight = true;
+            inside.childForceExpandWidth = true;
+            inside.childForceExpandHeight = false;
+            TMP_Text text = Widgets.Label(card.transform, "", 15f, Theme.Text, TextAlignmentOptions.TopLeft);
+            text.textWrappingMode = TextWrappingModes.Normal;
+            text.overflowMode = TextOverflowModes.Overflow;
+            _cards.Add(card.gameObject);
+            _cardTexts.Add(text);
+        }
+        for (int i = 0; i < _cards.Count; i++)
+        {
+            bool used = i < sections.Length;
+            _cards[i].SetActive(used);
+            if (used)
+            {
+                _cardTexts[i].text = sections[i];
+            }
+        }
     }
 
     // The items the colour buttons act on: the one chosen, the pieces of the set chosen, or everything on the model

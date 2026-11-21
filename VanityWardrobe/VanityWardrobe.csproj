@@ -85,6 +85,12 @@
     <None Include="app.config" Visible="false" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(VALHEIM_INSTALL)\valheim_Data\Managed\publicized_assemblies\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="JotunnLib">
       <Version>2.30.2</Version>
     </PackageReference>

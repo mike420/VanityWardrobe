@@ -36,6 +36,7 @@ Thank you for your support, and happy gaming! ...... (A Paypal account is NOT re
 [*][b]Open or close[/b] (default [b]F9[/b] (can be changed), or [b]Esc[/b]): 
 [*][b]Turn the model[/b] (default Drag on it, or use the [b]<[/b] and [b]>[/b] buttons): 
 [*][b]Zoom[/b] (default Mouse wheel over the model): 
+[*][b]Attack or block[/b] (default Left click or right click the model): 
 [*][b]Wear something[/b] (default Click it in the list. A set puts on all its pieces.): 
 [*][b]Take something off[/b] (default Click its slot under the model): 
 [*][b]Crafting quality[/b] (default The [b]<[/b] and [b]>[/b] buttons above the details): 

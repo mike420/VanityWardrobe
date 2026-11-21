@@ -55,6 +55,10 @@ finds files itself, so it will not catch a missing csproj entry.
   set to `AlwaysAnimate` with events off. The ATTACK and BLOCK hints use the game's `mouse1_icon` and `mouse2_icon` sprites and `$settings_attack` and
   `$settings_block`. Checked in game with a knife.
   `tools/check.sh` now also references the publicized copy of any module that has one (`ImageConversionModule` for `LoadImage`) and embeds the hanger.
+- **Detail cards:** the details column is a stack of cards (`ShowCards`), one per section, each a dark translucent box with a thin border and 16/12 px of padding
+  (`CardColor`, `CardOutline`, the card's own VerticalLayoutGroup) in the scroll area's vertical layout with 8 px between. The details text is still built as one string by
+  the `Append...` methods; `Heading()` puts a `` mark before each heading and `ShowCards` cuts the text at the marks, so a new heading is a new card and the first
+  card holds the name, biome, colour and set lines. Checked in game with Ashlands Medium Armor (six cards).
 - **Norse font:** `UiFont.Norse(label)` puts Valheim's Norse font (`GUIManager.Instance.TMP_Norse`, a capitals font) on the window title and the appearance
   panel's title and section headers, as the other mods do for their titles. The text is tried in capitals, and the font's table is asked for the characters
   with `TryAddCharacters` (`HasCharacters` alone only knows characters drawn so far and wrongly rejected "Character" and "Skin"); a label the font cannot draw
