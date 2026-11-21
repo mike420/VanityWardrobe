@@ -91,5 +91,10 @@
   "vanitywardrobe_ap_underwear": "Unterwäsche",
   "vanitywardrobe_ap_character": "Charakter",
   "vanitywardrobe_ap_skin": "Haut",
-  "vanitywardrobe_ap_tone": "Ton"
+  "vanitywardrobe_ap_tone": "Ton",
+  "vanitywardrobe_pin_more": "+$1 weitere",
+  "vanitywardrobe_pin_quality": "Qualität $1",
+  "vanitywardrobe_pin_added": "$1 angeheftet",
+  "vanitywardrobe_pin_removed": "$1 gelöst",
+  "vanitywardrobe_pin_hint": "Mittelklick: Rezept anheften"
 }

@@ -91,5 +91,10 @@
   "vanitywardrobe_ap_underwear": "İç Çamaşırı",
   "vanitywardrobe_ap_character": "Karakter",
   "vanitywardrobe_ap_skin": "Ten",
-  "vanitywardrobe_ap_tone": "Ton"
+  "vanitywardrobe_ap_tone": "Ton",
+  "vanitywardrobe_pin_more": "+$1 daha",
+  "vanitywardrobe_pin_quality": "Kalite $1",
+  "vanitywardrobe_pin_added": "$1 sabitlendi",
+  "vanitywardrobe_pin_removed": "$1 sabitlemesi kaldırıldı",
+  "vanitywardrobe_pin_hint": "Tarifi sabitlemek için orta tık"
 }

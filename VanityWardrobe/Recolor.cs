@@ -224,6 +224,9 @@ internal static class Recolor
         float scale = Mathf.Min(1f, (float)MaxSize / Mathf.Max(source.width, source.height));
         width = Mathf.Max(4, Mathf.RoundToInt(source.width * scale));
         height = Mathf.Max(4, Mathf.RoundToInt(source.height * scale));
+        // (DXT compression needs sizes that are multiples of 4)
+        width = (width + 3) / 4 * 4;
+        height = (height + 3) / 4 * 4;
         RenderTexture target = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
         RenderTexture previous = RenderTexture.active;
         try

@@ -153,7 +153,6 @@ internal sealed class WardrobePanel : MonoBehaviour
     private int _quality = 1;
     private float _nextRefresh;
     private string _chestKey = "";
-    private List<Inventory> _inventories = new List<Inventory>();
 
     // ---- opening and closing -------------------------------------------------------------------------------------------
 
@@ -343,7 +342,15 @@ internal sealed class WardrobePanel : MonoBehaviour
         BuildColors(titleBar.transform);
 
         _hint = Widgets.Label(panel, "", 14f, Theme.Muted, TextAlignmentOptions.Center);
-        Widgets.Place(_hint.gameObject, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(Margin, 8f), new Vector2(-Margin, 30f));
+        _hint.enableAutoSizing = true;
+        _hint.fontSizeMin = 10f;
+        _hint.fontSizeMax = 14f;
+        Widgets.Place(_hint.gameObject, new Vector2(0.30f, 0f), new Vector2(0.68f, 0f), new Vector2(0f, 8f), new Vector2(0f, 30f));
+        TMP_Text pinHint = Widgets.Label(panel, Translations.T("vanitywardrobe_pin_hint"), 14f, Theme.Muted, TextAlignmentOptions.Center);
+        pinHint.enableAutoSizing = true;
+        pinHint.fontSizeMin = 10f;
+        pinHint.fontSizeMax = 14f;
+        Widgets.Place(pinHint.gameObject, new Vector2(0f, 0f), new Vector2(0.30f, 0f), new Vector2(Margin, 8f), new Vector2(0f, 30f));
 
         RectTransform left = Column(panel, "List", 0f, 0.30f);
         RectTransform middle = Column(panel, "Room", 0.30f, 0.68f);
@@ -477,7 +484,7 @@ internal sealed class WardrobePanel : MonoBehaviour
 
     private void BuildRoom(RectTransform column)
     {
-        const float below = 236f;
+        const float below = 240f;
         Image frame = Widgets.Box(column, "PreviewFrame", Theme.Field, Theme.FieldOutline, 2f);
         Widgets.Place(frame.gameObject, Vector2.zero, Vector2.one, new Vector2(0f, below), Vector2.zero);
         GameObject view = Widgets.Child(frame.transform, "Preview");
@@ -493,7 +500,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         MakeHint(frame.transform, 0.61f, "mouse2_icon", "$settings_block", "Block");
 
         // Turn, my gear, no armor, clear
-        RectTransform controls = BottomStrip(column, 0f, 1f, 198f, 32f);
+        RectTransform controls = BottomStrip(column, 0f, 1f, 202f, 32f);
         (string text, float from, float to, Action action)[] buttons =
         {
             ("<", 0f, 0.1f, () => _room.Rotate(-30f)),
@@ -513,7 +520,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         for (int i = 0; i < Outfit.Slots.Length; i++)
         {
             Slot slot = Outfit.Slots[i];
-            RectTransform cell = BottomStrip(column, (i % 3) / 3f, (i % 3 + 1) / 3f, i < 3 ? 152f : 108f, 42f);
+            RectTransform cell = BottomStrip(column, (i % 3) / 3f, (i % 3 + 1) / 3f, i < 3 ? 156f : 112f, 42f);
             Button button = Widgets.Button(cell, "", 13f);
             Widgets.Fill(button.gameObject);
             TMP_Text label = button.GetComponentInChildren<TMP_Text>();
@@ -524,18 +531,18 @@ internal sealed class WardrobePanel : MonoBehaviour
         }
 
         // Saving and loading outfits
-        _outfitName = Widgets.Input(BottomStrip(column, 0f, 0.6f, 62f, 32f), 15f, Translations.T("vanitywardrobe_outfit_name"));
+        _outfitName = Widgets.Input(BottomStrip(column, 0f, 0.6f, 66f, 32f), 15f, Translations.T("vanitywardrobe_outfit_name"));
         Widgets.Fill(_outfitName.gameObject);
-        Button save = Widgets.Button(BottomStrip(column, 0.6f, 1f, 62f, 32f), Translations.T("vanitywardrobe_save"), 15f);
+        Button save = Widgets.Button(BottomStrip(column, 0.6f, 1f, 66f, 32f), Translations.T("vanitywardrobe_save"), 15f);
         Widgets.Fill(save.gameObject);
         save.onClick.AddListener(SaveOutfit);
 
-        _savedOutfits = Widgets.Dropdown(BottomStrip(column, 0f, 0.6f, 20f, 32f), 14f);
+        _savedOutfits = Widgets.Dropdown(BottomStrip(column, 0f, 0.6f, 24f, 32f), 14f);
         Widgets.Fill(_savedOutfits.gameObject);
-        Button load = Widgets.Button(BottomStrip(column, 0.6f, 0.8f, 20f, 32f), Translations.T("vanitywardrobe_load"), 15f);
+        Button load = Widgets.Button(BottomStrip(column, 0.6f, 0.8f, 24f, 32f), Translations.T("vanitywardrobe_load"), 15f);
         Widgets.Fill(load.gameObject);
         load.onClick.AddListener(LoadOutfit);
-        Button delete = Widgets.Button(BottomStrip(column, 0.8f, 1f, 20f, 32f), Translations.T("vanitywardrobe_delete"), 15f);
+        Button delete = Widgets.Button(BottomStrip(column, 0.8f, 1f, 24f, 32f), Translations.T("vanitywardrobe_delete"), 15f);
         Widgets.Fill(delete.gameObject);
         delete.onClick.AddListener(DeleteOutfit);
     }
@@ -587,7 +594,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         _detailsScroll.viewport.pivot = new Vector2(0f, 0.5f);
         _detailsScroll.scrollSensitivity = 0f;
         _detailsScroll.gameObject.AddComponent<StepScroll>().Init(_detailsScroll, 90f, null);
-        Widgets.Place(_detailsScroll.gameObject, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(0f, -72f));
+        Widgets.Place(_detailsScroll.gameObject, Vector2.zero, Vector2.one, new Vector2(0f, 24f), new Vector2(0f, -72f));   // (its bottom lines up with the list and the room)
         // The details are a stack of cards, one for each section
         VerticalLayoutGroup stack = _detailsScroll.content.GetComponent<VerticalLayoutGroup>();
         stack.spacing = 8f;
@@ -775,7 +782,32 @@ internal sealed class WardrobePanel : MonoBehaviour
         view.Icon.raycastTarget = false;
         Widgets.Place(view.Icon.gameObject, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(6f, -18f), new Vector2(42f, 18f));
         view.Button.onClick.AddListener(() => Choose(view.Key));
+        view.Button.gameObject.AddComponent<MiddleClick>().Action = () => PinRow(view.Key);
         return view;
+    }
+
+    // Middle click on an item or set pins its recipe under the minimap (at the quality chosen here), or unpins it if it is pinned
+    private void PinRow(object key)
+    {
+        string title;
+        List<string> prefabs;
+        if (key is SetEntry set)
+        {
+            title = set.Name;
+            prefabs = set.Pieces.Select(p => p.Prefab).ToList();
+        }
+        else if (key is Entry entry)
+        {
+            title = entry.Name;
+            prefabs = new List<string> { entry.Prefab };
+        }
+        else
+        {
+            return;
+        }
+        bool was = Pins.IsPinned(prefabs);
+        Pins.Toggle(title, prefabs, _quality);
+        Player.m_localPlayer?.Message(MessageHud.MessageType.TopLeft, Translations.T(was ? "vanitywardrobe_pin_removed" : "vanitywardrobe_pin_added", title));
     }
 
     // Puts the rows that are in view on the list. A few rows are made once and reused as the list scrolls, so a list of any length
@@ -993,39 +1025,7 @@ internal sealed class WardrobePanel : MonoBehaviour
     }
 
     // The inventories whose items count as "have": the player's, and every chest within reach
-    private void RefreshChests()
-    {
-        Player player = Player.m_localPlayer;
-        if (player == null)
-        {
-            return;
-        }
-        List<Inventory> found = new List<Inventory> { player.GetInventory() };
-        float radius = MainConfig.chestRadius.Value;
-        if (radius > 0f)
-        {
-            foreach (Container container in FindObjectsByType<Container>(FindObjectsSortMode.None))
-            {
-                Inventory inventory = container.GetInventory();
-                if (inventory != null && container.m_nview != null && container.m_nview.IsValid() && Vector3.Distance(container.transform.position, player.transform.position) <= radius)
-                {
-                    found.Add(inventory);
-                }
-            }
-        }
-        _inventories = found;
-    }
-
-    private int Have(ItemDrop item)
-    {
-        string name = item.m_itemData.m_shared.m_name;
-        int count = 0;
-        foreach (Inventory inventory in _inventories)
-        {
-            count += inventory.CountItems(name);
-        }
-        return count;
-    }
+    private void RefreshChests() => Stock.Refresh();
 
     private void RefreshDetails()
     {
@@ -1061,8 +1061,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         return SectionBreak + "<size=18><b><color=" + Theme.Tag(Theme.TextBright) + ">" + text + "</color></b></size>\n";
     }
 
-    private static readonly Color CardColor = new Color(0.09f, 0.065f, 0.05f, 0.5f);
-    private static readonly Color CardOutline = new Color(0.42f, 0.27f, 0.14f, 0.55f);
+    private static readonly Color CardColor = new Color(0f, 0f, 0f, 0.4f);
 
     // Shows the details as one card for each section, with room inside each so the text does not touch its edge
     private void ShowCards(string all)
@@ -1070,7 +1069,9 @@ internal sealed class WardrobePanel : MonoBehaviour
         string[] sections = all.Split(SectionBreak).Select(section => section.Trim('\n', ' ')).Where(section => section.Length > 0).ToArray();
         while (_cards.Count < sections.Length)
         {
-            Image card = Widgets.Box(_detailsScroll.content, "Card", CardColor, CardOutline, 1f);
+            Image card = Widgets.Box(_detailsScroll.content, "Card", CardColor);
+            card.sprite = PinPanel.RoundedSprite();
+            card.type = Image.Type.Sliced;
             VerticalLayoutGroup inside = card.gameObject.AddComponent<VerticalLayoutGroup>();
             inside.padding = new RectOffset(16, 16, 12, 14);
             inside.childControlWidth = true;
@@ -1352,7 +1353,7 @@ internal sealed class WardrobePanel : MonoBehaviour
             {
                 foreach (Piece.Requirement requirement in recipe.m_resources)
                 {
-                    if (requirement.m_resItem == null)
+                    if (requirement.m_resItem == null || (requirement.m_upgraderResource && level == 1))
                     {
                         continue;
                     }
@@ -1370,7 +1371,7 @@ internal sealed class WardrobePanel : MonoBehaviour
             text.Append("<b>").Append(Translations.T("vanitywardrobe_materials", _quality.ToString())).Append("</b>\n");
             foreach (KeyValuePair<ItemDrop, int> pair in need.OrderBy(p => p.Key.name))
             {
-                int have = Have(pair.Key);
+                int have = Stock.Have(pair.Key);
                 string colour = Theme.Tag(have >= pair.Value ? new Color(0.55f, 0.85f, 0.45f, 1f) : new Color(0.95f, 0.4f, 0.35f, 1f));
                 text.Append("  ").Append(Localization.instance.Localize(pair.Key.m_itemData.m_shared.m_name)).Append("   <color=").Append(colour).Append(">").Append(have).Append(" / ").Append(pair.Value).Append("</color>\n");
             }
@@ -1399,7 +1400,7 @@ internal sealed class WardrobePanel : MonoBehaviour
             string station = recipe.m_craftingStation != null
                 ? Localization.instance.Localize(recipe.m_craftingStation.m_name) + " " + Translations.T("vanitywardrobe_station_level", recipe.GetRequiredStationLevel(level).ToString())
                 : "";
-            string materials = string.Join(", ", recipe.m_resources.Where(r => r.m_resItem != null && r.GetAmount(level) > 0)
+            string materials = string.Join(", ", recipe.m_resources.Where(r => r.m_resItem != null && r.GetAmount(level) > 0 && !(r.m_upgraderResource && level == 1))
                 .Select(r => r.GetAmount(level) + " " + Localization.instance.Localize(r.m_resItem.m_itemData.m_shared.m_name)));
             line.Append("  <color=").Append(Theme.Tag(Theme.Muted)).Append(">").Append(level).Append(".</color> ").Append(station).Append(station.Length > 0 && materials.Length > 0 ? ": " : "").Append(materials).Append('\n');
         }

@@ -325,7 +325,7 @@ internal static class Catalog
             {
                 string name = Squash(plugin.Metadata.Name);
                 string guid = Squash(plugin.Metadata.GUID);
-                if (name.Contains(key) || key.Contains(name) || guid.Contains(key))
+                if ((name.Length >= 4 && (name.Contains(key) || key.Contains(name))) || guid.Contains(key))
                 {
                     return plugin.Metadata.Name;
                 }

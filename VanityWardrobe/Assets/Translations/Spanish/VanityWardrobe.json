@@ -91,5 +91,10 @@
   "vanitywardrobe_ap_underwear": "Ropa interior",
   "vanitywardrobe_ap_character": "Personaje",
   "vanitywardrobe_ap_skin": "Piel",
-  "vanitywardrobe_ap_tone": "Tono"
+  "vanitywardrobe_ap_tone": "Tono",
+  "vanitywardrobe_pin_more": "+$1 más",
+  "vanitywardrobe_pin_quality": "Calidad $1",
+  "vanitywardrobe_pin_added": "$1 fijado",
+  "vanitywardrobe_pin_removed": "$1 desfijado",
+  "vanitywardrobe_pin_hint": "Clic central para fijar la receta"
 }

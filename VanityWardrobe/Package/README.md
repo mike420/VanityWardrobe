@@ -34,6 +34,7 @@ Thank you for your support, and happy gaming! ⚔️  ...... (A Paypal account i
   * **My gear and No armor.** Put on what you are wearing now, or take the armor off.
   * Uses the same panel style as the Mod Settings window.
   * Client side: you do not need the server to have it, and it does not change gameplay.
+  * **Pinned recipes.** Middle-click an item or a set in the list to pin its crafting recipe (at the quality chosen in the window). A panel under the minimap shows the materials with how many you have out of how many you need, counting nearby chests, green when you have enough and red while short. Middle-click again to unpin; with the mouse pointer free (inventory open), left-click a pin to fold its materials, right-click to remove it, and drag the panel to move it (the position is remembered). Pins are saved with the character.
   * **Keyboard and mouse only.** There is no game controller support: the window is opened with a key and used with the mouse.
 
 <br>
@@ -46,6 +47,7 @@ Thank you for your support, and happy gaming! ⚔️  ...... (A Paypal account i
 | Turn the model | Drag on it, or use the **<** and **>** buttons |
 | Zoom | Mouse wheel over the model |
 | Attack or block | Left click or right click the model |
+| Pin or unpin a recipe | Middle-click an item or set in the list |
 | Wear something | Click it in the list. A set puts on all its pieces. |
 | Take something off | Click its slot under the model |
 | Crafting quality | The **<** and **>** buttons above the details |
@@ -62,6 +64,11 @@ Press **F7** in game to open the settings panel, or edit `BepInEx/config/MagicMi
 | Open Key | F9 | The key that opens and closes the wardrobe. |
 | Chest Radius | 30 | Chests within this many metres count towards the have / need totals. 0 counts only your inventory. |
 | Start With My Gear | On | The model wears what you are wearing each time the wardrobe opens. If Off, it keeps the last outfit you tried. |
+| Show Pinned Recipes | On | Show the pinned recipes panel under the minimap. |
+| Panel Scale | 1 | Size of the pinned recipes panel. |
+| Max Pins Shown | 6 | How many pins the panel shows; the rest are counted in a "+N more" line. |
+| Vertical Offset | 0 | Moves the panel down or up from just under the minimap, in pixels. Dragging the panel sets this. |
+| Horizontal Offset | 0 | Moves the panel right or left from the minimap's right edge, in pixels. Dragging the panel sets this. |
 | Debug Log | Off | If On, the game's log gets lines starting `[VanityWardrobe]` about colours: the ones your game sends, the ones it receives from other players, and each item recoloured. Turn it on when asking about a problem seeing other players' colours. |
 
 <br>

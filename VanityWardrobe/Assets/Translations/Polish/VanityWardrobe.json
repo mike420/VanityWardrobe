@@ -91,5 +91,10 @@
   "vanitywardrobe_ap_underwear": "Bielizna",
   "vanitywardrobe_ap_character": "Postać",
   "vanitywardrobe_ap_skin": "Skóra",
-  "vanitywardrobe_ap_tone": "Ton"
+  "vanitywardrobe_ap_tone": "Ton",
+  "vanitywardrobe_pin_more": "+$1 więcej",
+  "vanitywardrobe_pin_quality": "Jakość $1",
+  "vanitywardrobe_pin_added": "Przypięto: $1",
+  "vanitywardrobe_pin_removed": "Odpięto: $1",
+  "vanitywardrobe_pin_hint": "Środkowy przycisk: przypnij recepturę"
 }

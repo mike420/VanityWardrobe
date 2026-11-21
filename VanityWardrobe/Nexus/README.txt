@@ -27,6 +27,7 @@ Thank you for your support, and happy gaming! ...... (A Paypal account is NOT re
 [*][b]My gear and No armor.[/b] Put on what you are wearing now, or take the armor off.
 [*]Uses the same panel style as the Mod Settings window.
 [*]Client side: you do not need the server to have it, and it does not change gameplay.
+[*][b]Pinned recipes.[/b] Middle-click an item or a set in the list to pin its crafting recipe (at the quality chosen in the window). A panel under the minimap shows the materials with how many you have out of how many you need, counting nearby chests, green when you have enough and red while short. Middle-click again to unpin; with the mouse pointer free (inventory open), left-click a pin to fold its materials, right-click to remove it, and drag the panel to move it (the position is remembered). Pins are saved with the character.
 [*][b]Keyboard and mouse only.[/b] There is no game controller support: the window is opened with a key and used with the mouse.
 [/list]
 
@@ -38,6 +39,7 @@ Thank you for your support, and happy gaming! ...... (A Paypal account is NOT re
 [*][b]Turn the model[/b] (default Drag on it, or use the [b]<[/b] and [b]>[/b] buttons): 
 [*][b]Zoom[/b] (default Mouse wheel over the model): 
 [*][b]Attack or block[/b] (default Left click or right click the model): 
+[*][b]Pin or unpin a recipe[/b] (default Middle-click an item or set in the list): 
 [*][b]Wear something[/b] (default Click it in the list. A set puts on all its pieces.): 
 [*][b]Take something off[/b] (default Click its slot under the model): 
 [*][b]Crafting quality[/b] (default The [b]<[/b] and [b]>[/b] buttons above the details): 
@@ -51,6 +53,11 @@ Press [b]F7[/b] in game to open the settings panel, or edit [b]BepInEx/config/Ma
 [*][b]Open Key[/b] (default F9): The key that opens and closes the wardrobe.
 [*][b]Chest Radius[/b] (default 30): Chests within this many metres count towards the have / need totals. 0 counts only your inventory.
 [*][b]Start With My Gear[/b] (default On): The model wears what you are wearing each time the wardrobe opens. If Off, it keeps the last outfit you tried.
+[*][b]Show Pinned Recipes[/b] (default On): Show the pinned recipes panel under the minimap.
+[*][b]Panel Scale[/b] (default 1): Size of the pinned recipes panel.
+[*][b]Max Pins Shown[/b] (default 6): How many pins the panel shows; the rest are counted in a "+N more" line.
+[*][b]Vertical Offset[/b] (default 0): Moves the panel down or up from just under the minimap, in pixels. Dragging the panel sets this.
+[*][b]Horizontal Offset[/b] (default 0): Moves the panel right or left from the minimap's right edge, in pixels. Dragging the panel sets this.
 [*][b]Debug Log[/b] (default Off): If On, the game's log gets lines starting [b][VanityWardrobe][/b] about colours: the ones your game sends, the ones it receives from other players, and each item recoloured. Turn it on when asking about a problem seeing other players' colours.
 [/list]
 

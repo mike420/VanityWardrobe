@@ -35,7 +35,12 @@ public class VanityWardrobeMod : BaseUnityPlugin
 
     public void Update()
     {
+        if (!MainConfig.modEnabled.Value)
+        {
+            return;
+        }
         WardrobePanel.Tick();
+        PinPanel.Tick();
         Biomes.Tick(this);
         Colors.Publish();
     }
@@ -44,6 +49,7 @@ public class VanityWardrobeMod : BaseUnityPlugin
     {
         harmony?.UnpatchSelf();
         WardrobePanel.Shutdown();
+        PinPanel.Shutdown();
         Recolor.Clear();
     }
 }

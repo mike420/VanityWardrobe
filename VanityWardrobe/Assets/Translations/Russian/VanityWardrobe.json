@@ -91,5 +91,10 @@
   "vanitywardrobe_ap_underwear": "Нижнее бельё",
   "vanitywardrobe_ap_character": "Персонаж",
   "vanitywardrobe_ap_skin": "Кожа",
-  "vanitywardrobe_ap_tone": "Тон"
+  "vanitywardrobe_ap_tone": "Тон",
+  "vanitywardrobe_pin_more": "ещё $1",
+  "vanitywardrobe_pin_quality": "Качество $1",
+  "vanitywardrobe_pin_added": "Закреплено: $1",
+  "vanitywardrobe_pin_removed": "Откреплено: $1",
+  "vanitywardrobe_pin_hint": "Средняя кнопка мыши: закрепить рецепт"
 }

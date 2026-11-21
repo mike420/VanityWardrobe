@@ -23,6 +23,7 @@ VanityWardrobe/              the project
                              so renumbering a section keeps users' values; add renamed sections to `OldSections`. Checked by moving a section to `[5 - ...]`.
   Catalog.cs                 item list and set grouping, built from ObjectDB when the window opens
   Biomes.cs                  works out each item's biome from the world (see Biomes below); reads locations in the background; biomes.cache
+  Pins.cs, PinPanel.cs, Stock.cs  pinned recipes (see Pinned recipes below)
   Colors.cs, Recolor.cs      per-item colour presets: the choices (colors.txt), the ZDO sync, and the texture recolouring (see Recolor below)
   AppearancePanel.cs         the panel to the right of the window: sex, skin, hair, beard, hair colour, and with Einherjar Bodies eyes and underwear
   EinherjarLink.cs           finds Einherjar Bodies' look API by GUID at run time (same pattern as VillagePlebs' EinherjarLook.cs); no hard dependency
@@ -152,6 +153,15 @@ finds files itself, so it will not catch a missing csproj entry.
   the preview, the panel filling the window's height, and no Einherjar Bodies installed (only Character, Skin, Hair, Beard and Hair Color show).
   Not checked: the eye and underwear sliders by dragging, the hair colour picker by dragging, skin tone, and what Done-less live editing does when a
   player closes the window mid-way (it simply keeps the change).
+
+- **Pinned recipes (like 95Shade's Pin Those Recipes, built from its README only):** middle-click a row in the wardrobe list (`MiddleClick` component added in `MakeRow`,
+  `WardrobePanel.PinRow`) pins that item or set at the window's quality, or unpins it. `Pins.cs` keeps them in `player.m_customData["vanitywardrobe_pins"]` (saved with the
+  character; `Title~Quality~Collapsed~Prefab+Prefab` joined by `|`). `PinPanel.cs` draws them as a child of `Hud.m_rootObject`, right-aligned under `Minimap.m_smallRoot`
+  (lower while `m_shipHudRoot` is up), hidden when the large map is open; counts refresh every 0.5 s. Left click on a pin folds it, right click unpins (only when the pointer is free).
+  `Stock.cs` holds the have (inventory plus chests in Chest Radius) and need sums, shared with the window's cost list. Requirements with `m_upgraderResource` (the "Protection
+  Idol" items, `Upgrader0Armor`...) are skipped at level 1: they are only needed to upgrade, and the first craft does not take them (the reference mod's 1.0.2 fix). Config section
+  "Pinned Recipes". Checked in game: middle click pinning Bronze and Berserker, the panel under the minimap, the idols gone. Not checked: the left/right click on a pin, saving and
+  loading pins across a restart (the game was killed to restore the character files), the sailing offset, Esc/inventory overlap.
 
 ## Building and testing
 

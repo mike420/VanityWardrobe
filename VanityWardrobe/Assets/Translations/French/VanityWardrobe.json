@@ -91,5 +91,10 @@
   "vanitywardrobe_ap_underwear": "Sous-vêtements",
   "vanitywardrobe_ap_character": "Personnage",
   "vanitywardrobe_ap_skin": "Peau",
-  "vanitywardrobe_ap_tone": "Ton"
+  "vanitywardrobe_ap_tone": "Ton",
+  "vanitywardrobe_pin_more": "+$1 de plus",
+  "vanitywardrobe_pin_quality": "Qualité $1",
+  "vanitywardrobe_pin_added": "$1 épinglé",
+  "vanitywardrobe_pin_removed": "$1 désépinglé",
+  "vanitywardrobe_pin_hint": "Clic molette pour épingler la recette"
 }

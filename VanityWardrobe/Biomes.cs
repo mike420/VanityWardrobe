@@ -531,7 +531,7 @@ internal static class Biomes
         foreach (Recipe recipe in recipes)
         {
             List<int> tiers = recipe.m_resources
-                .Where(r => r.m_resItem != null && r.m_resItem.name != item)
+                .Where(r => r.m_resItem != null && r.m_resItem.name != item && !r.m_upgraderResource)   // (an upgrade catalyst is not needed to craft it)
                 .Select(r => MaterialTier(r.m_resItem.name))
                 .Where(t => t >= 0)
                 .ToList();

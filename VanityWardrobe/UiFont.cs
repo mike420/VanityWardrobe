@@ -48,8 +48,9 @@ internal static class UiFont
             {
                 if (stream != null)
                 {
-                    byte[] bytes = new byte[stream.Length];
-                    stream.Read(bytes, 0, bytes.Length);
+                    MemoryStream memory = new MemoryStream();
+                    stream.CopyTo(memory);
+                    byte[] bytes = memory.ToArray();
                     Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false) { name = "VanityWardrobe hanger", filterMode = FilterMode.Bilinear };
                     texture.LoadImage(bytes);
                     s_hanger = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100f);

@@ -91,5 +91,10 @@
   "vanitywardrobe_ap_underwear": "Underwear",
   "vanitywardrobe_ap_character": "Character",
   "vanitywardrobe_ap_skin": "Skin",
-  "vanitywardrobe_ap_tone": "Tone"
+  "vanitywardrobe_ap_tone": "Tone",
+  "vanitywardrobe_pin_more": "+$1 more",
+  "vanitywardrobe_pin_quality": "Quality $1",
+  "vanitywardrobe_pin_added": "Pinned $1",
+  "vanitywardrobe_pin_removed": "Unpinned $1",
+  "vanitywardrobe_pin_hint": "Middle click to pin recipe"
 }

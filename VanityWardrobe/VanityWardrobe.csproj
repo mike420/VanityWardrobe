@@ -64,6 +64,9 @@
     <Compile Include="UiFont.cs" />
     <Compile Include="EinherjarLink.cs" />
     <Compile Include="AppearancePanel.cs" />
+    <Compile Include="Stock.cs" />
+    <Compile Include="Pins.cs" />
+    <Compile Include="PinPanel.cs" />
     <Compile Include="Outfit.cs" />
     <Compile Include="FittingRoom.cs" />
     <Compile Include="WardrobePanel.cs" />

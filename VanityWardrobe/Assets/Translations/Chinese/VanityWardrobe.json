@@ -91,5 +91,10 @@
   "vanitywardrobe_ap_underwear": "内衣",
   "vanitywardrobe_ap_character": "角色",
   "vanitywardrobe_ap_skin": "皮肤",
-  "vanitywardrobe_ap_tone": "色调"
+  "vanitywardrobe_ap_tone": "色调",
+  "vanitywardrobe_pin_more": "还有 $1 项",
+  "vanitywardrobe_pin_quality": "品质 $1",
+  "vanitywardrobe_pin_added": "已固定 $1",
+  "vanitywardrobe_pin_removed": "已取消固定 $1",
+  "vanitywardrobe_pin_hint": "鼠标中键固定配方"
 }

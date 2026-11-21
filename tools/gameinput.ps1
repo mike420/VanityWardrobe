@@ -30,6 +30,7 @@ function Shot($path) {
 switch ($Action) {
   "shot"  { Shot $Out; "$($r.R-$r.L)x$($r.B-$r.T) at $($r.L),$($r.T)" }
   "click" { $x = $r.L + [int]$Arg1; $y = $r.T + [int]$Arg2; [W]::SetCursorPos($x, $y) | Out-Null; Start-Sleep -Milliseconds 120; [W]::mouse_event(2,0,0,0,[UIntPtr]::Zero); Start-Sleep -Milliseconds 80; [W]::mouse_event(4,0,0,0,[UIntPtr]::Zero) }
+  "mclick" { $x = $r.L + [int]$Arg1; $y = $r.T + [int]$Arg2; [W]::SetCursorPos($x, $y) | Out-Null; Start-Sleep -Milliseconds 120; [W]::mouse_event(0x20,0,0,0,[UIntPtr]::Zero); Start-Sleep -Milliseconds 80; [W]::mouse_event(0x40,0,0,0,[UIntPtr]::Zero) }
   "move"  { [W]::SetCursorPos($r.L + [int]$Arg1, $r.T + [int]$Arg2) | Out-Null }
   "key"   { $vk = [byte][int]$Arg1; [W]::keybd_event($vk,0,0,[UIntPtr]::Zero); Start-Sleep -Milliseconds 90; [W]::keybd_event($vk,0,2,[UIntPtr]::Zero) }
   "scroll"{ [W]::mouse_event(0x800,0,0,[int]$Arg1,[UIntPtr]::Zero) }
