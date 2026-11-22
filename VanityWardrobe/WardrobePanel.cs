@@ -270,6 +270,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         RefreshList();
         ApplyOutfit();
         RefreshChests();
+        _shownCards = null;
         RefreshDetails();
     }
 
@@ -320,7 +321,7 @@ internal sealed class WardrobePanel : MonoBehaviour
         if (Time.unscaledTime >= _nextRefresh)
         {
             _nextRefresh = Time.unscaledTime + RefreshInterval;
-            RefreshChests();
+            Stock.RefreshIfDue(5f);   // (looking for chests walks every container in the world: not every second)
             RefreshDetails();
         }
     }
@@ -1121,8 +1122,15 @@ internal sealed class WardrobePanel : MonoBehaviour
     private static readonly Color CardColor = new Color(0f, 0f, 0f, 0.4f);
 
     // Shows the details as one card for each section, with room inside each so the text does not touch its edge
+    private string _shownCards;
+
     private void ShowCards(string all)
     {
+        if (all == _shownCards)
+        {
+            return;   // nothing changed: leave the cards alone, so no text is laid out again
+        }
+        _shownCards = all;
         string[] sections = all.Split(SectionBreak).Select(section => section.Trim('\n', ' ')).Where(section => section.Length > 0).ToArray();
         while (_cards.Count < sections.Length)
         {

@@ -96,5 +96,5 @@ For Nexus downloads you will need to install manually.
 [*]<a href="https://valheim.hexium.gg/mods/MagicMike/YabbaDabbaDoo">YabbaDabbaDoo</a>
 [/list]
 
-[size=5][b]Comments/Suggestions/Help: <a href="https://www.nexusmods.com/valheim/mods/2806">Nexus</a>, <a href="https://discord.gg/mnr36G6J4x">Discord</a>.[/b][/size]
+[size=5][b]Comments/Suggestions/Help: <a href="https://discord.gg/mnr36G6J4x">Discord</a>.[/b][/size]
 

@@ -111,6 +111,24 @@ internal static class Catalog
         }
     }
 
+    // The game has FW_ and SP_ copies of some plain items (FW_HelmetBronze, SP_HelmetBronze next to HelmetBronze) with the same name, icon and stats,
+    // so the list would show the item three times. The plain one is kept.
+    private static bool IsEventCopy(string prefab, string name)
+    {
+        foreach (string prefix in new[] { "FW_", "SP_" })
+        {
+            if (prefab.StartsWith(prefix) && ObjectDB.instance.GetItemPrefab(prefab.Substring(prefix.Length)) is GameObject plain)
+            {
+                ItemDrop drop = plain.GetComponent<ItemDrop>();
+                if (drop != null && Localization.instance.Localize(drop.m_itemData.m_shared.m_name) == name)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private static void Build()
     {
         Dictionary<string, string> bundleOf = BundleOfPrefabs();
@@ -132,6 +150,10 @@ internal static class Catalog
                 continue;
             }
             string name = Localization.instance.Localize(shared.m_name);
+            if (IsEventCopy(prefab.name, name))
+            {
+                continue;
+            }
             items.Add(new Entry
             {
                 Prefab = prefab.name,

@@ -10,6 +10,8 @@ internal static class Stock
 {
     private static List<Inventory> s_inventories = new List<Inventory>();
     private static float s_nextRefresh;
+    private static readonly Collider[] s_hits = new Collider[2048];
+    private static readonly int s_mask = LayerMask.GetMask("piece", "piece_nonsolid", "Default_small", "vehicle");
 
     // Looks again for the containers near the player
     public static void Refresh()
@@ -24,12 +26,19 @@ internal static class Stock
         float radius = MainConfig.chestRadius.Value;
         if (radius > 0f)
         {
-            foreach (Container container in Object.FindObjectsByType<Container>(FindObjectsSortMode.None))
+            // Only what is near the player is looked at (building pieces are on these layers); searching every container in the world took about 9 ms
+            int count = Physics.OverlapSphereNonAlloc(player.transform.position, radius, s_hits, s_mask, QueryTriggerInteraction.Ignore);
+            HashSet<Container> seen = new HashSet<Container>();
+            for (int i = 0; i < count; i++)
             {
-                Inventory inventory = container.GetInventory();
-                if (inventory != null && container.m_nview != null && container.m_nview.IsValid() && Vector3.Distance(container.transform.position, player.transform.position) <= radius)
+                Container container = s_hits[i].GetComponentInParent<Container>();
+                if (container != null && seen.Add(container))
                 {
-                    found.Add(inventory);
+                    Inventory inventory = container.GetInventory();
+                    if (inventory != null && container.m_nview != null && container.m_nview.IsValid())
+                    {
+                        found.Add(inventory);
+                    }
                 }
             }
         }

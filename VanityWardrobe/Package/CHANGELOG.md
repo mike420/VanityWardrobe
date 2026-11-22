@@ -7,6 +7,15 @@
 </thead>
 <tbody>
   <tr>
+    <td>1.0.3</td>
+    <td>
+        <ul>
+            <li>Items the game has event copies of (such as the Bronze Helmet) now show once in the list instead of three times.</li>
+            <li>Smoother play with pinned recipes and the wardrobe open: looking for nearby chests no longer causes a hitch every few seconds, and the details are only redrawn when they change.</li>
+        </ul>
+    </td>
+  </tr>
+  <tr>
     <td>1.0.2</td>
     <td>
         <ul>

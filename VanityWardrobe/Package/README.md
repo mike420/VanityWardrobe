@@ -115,4 +115,4 @@ For Nexus downloads you will need to install manually.
 
 <br>
 
-## 💬 Comments/Suggestions/Help: <a href="https://www.nexusmods.com/valheim/mods/2806">Nexus</a>, <a href="https://discord.gg/mnr36G6J4x">Discord</a>.
+## 💬 Comments/Suggestions/Help: <a href="https://discord.gg/mnr36G6J4x">Discord</a>.
