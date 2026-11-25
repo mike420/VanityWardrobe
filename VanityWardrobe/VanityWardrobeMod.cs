@@ -11,7 +11,7 @@ namespace VanityWardrobe;
 public class VanityWardrobeMod : BaseUnityPlugin
 {
     public const string PluginName = "VanityWardrobe";
-    public const string PluginVersion = "1.0.3";
+    public const string PluginVersion = "1.0.4";
     public const string PluginAuthor = "MagicMike";
     internal const string PluginGUID = "MagicMike.VanityWardrobe";
     internal const string PluginCopy = "Copyright © MagicMike 2026";
