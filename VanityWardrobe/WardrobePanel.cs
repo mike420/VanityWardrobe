@@ -560,7 +560,7 @@ internal sealed class WardrobePanel : MonoBehaviour
             Widgets.Fill(button.gameObject);
             TMP_Text label = button.GetComponentInChildren<TMP_Text>();
             label.textWrappingMode = TextWrappingModes.Normal;
-            label.SetEllipsisOverflow();
+            label.overflowMode = TextOverflowModes.Truncate;
             button.onClick.AddListener(() => { _outfit[slot] = null; AfterOutfitChange(); });
             _slotButtons[i] = button;
         }
