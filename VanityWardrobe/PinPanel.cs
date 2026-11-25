@@ -290,7 +290,7 @@ internal static class PinPanel
         TMP_Text head = Widgets.Label(card.transform, (pin.Collapsed ? "> " : "v ") + title, 16f, Theme.TextBright, TextAlignmentOptions.MidlineLeft, bold: true);
         head.raycastTarget = false;
         head.textWrappingMode = TextWrappingModes.NoWrap;
-        head.overflowMode = TextOverflowModes.Ellipsis;
+        head.SetEllipsisOverflow();
         s_views.Add(new PinView { Head = head, Need = need });
         if (pin.Collapsed)
         {
@@ -302,7 +302,7 @@ internal static class PinPanel
             line.raycastTarget = false;
             line.richText = true;
             line.textWrappingMode = TextWrappingModes.NoWrap;
-            line.overflowMode = TextOverflowModes.Ellipsis;
+            line.SetEllipsisOverflow();
             s_lines.Add(new CountLine
             {
                 Text = line,
