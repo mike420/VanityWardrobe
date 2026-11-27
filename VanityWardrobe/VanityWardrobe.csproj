@@ -143,4 +143,10 @@
     <ZipDirectory SourceDirectory="$(ThunderPackage)" DestinationFile="$(ProjectDir)ThunderStore\$(PackageName).zip" Overwrite="true" />
     <RemoveDir Directories="$(ThunderPackage)" />
   </Target>
+  <!-- JotunnLib 2.30.3+ also references the non-publicized ImageConversionModule (built against netstandard 2.1), which breaks the net48 build; keep only the publicized one -->
+  <Target Name="UsePublicizedImageConversionModule" BeforeTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <Reference Remove="@(Reference)" Condition="'%(Reference.Identity)' == 'UnityEngine.ImageConversionModule' And !$([System.String]::Copy('%(Reference.HintPath)').Contains('publicized_assemblies'))" />
+    </ItemGroup>
+  </Target>
 </Project>
